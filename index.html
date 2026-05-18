@@ -1234,7 +1234,7 @@ function anyFaceDown(exclude=[]){
 
 function hasFlippable(){
   for(let i=0;i<TOTAL;i++){
-    if(!G.matched.has(i)&&!G.flipped.includes(i)&&!G.rocks.includes(i)&&G.wall!==i) return true;
+    if(!G.matched.has(i)&&!G.flipped.includes(i)&&!G.rocks.includes(i)&&G.wall!==i&&i!==G.bossPos) return true;
   }
   return false;
 }
