@@ -589,7 +589,7 @@ const DICE_DEF = [
   { lbl:'Double step — moves twice!',  step2:true   },
   { lbl:'Triple step — moves three!',  step3:true   },
   { lbl:'ROCK! Current tile blocked!', rock:true    },
-  { lbl:'WALL! Smashy places a wall!', wall:true    },
+  { lbl:'ROCK! Current tile blocked!', rock:true    },
   { lbl:'SWAP — tiles next to Smashy!',swapAdj:true },
 ];
 const DICE_DEF_HARD = [
@@ -1152,7 +1152,7 @@ function execMove(ri){
       }
       render(); return;
     }
-    if(G.rocks.length>=2){
+    if(G.rocks.length>=3){
       G.rocks.shift(); G.rocks.push(rockTarget);
       showBossPopup('<img src="./rock-3.webp" style="width:72px;height:72px;object-fit:contain;">','Rock Moved!','Oldest rock relocated!');
     } else {
