@@ -197,6 +197,16 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
+  .tile-group-label {
+    grid-column: 1 / -1;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    color: #5a1fa0;
+    margin: 6px 0 2px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid rgba(90,31,160,0.2);
+  }
+  .tile-group-label:first-child { margin-top: 0; }
   .tile-card {
     display: flex;
     gap: 10px;
@@ -416,18 +426,23 @@
       </div>
       <div class="component-item">
         <img src="./step-dice.webp" alt="">
-        <div class="component-name">Smashy's Die</div>
-        <div class="component-count">1 custom die (3 difficulties)</div>
+        <div class="component-name">Smashy's Dice</div>
+        <div class="component-count">Easy, Medium, and Hard Dice</div>
       </div>
       <div class="component-item">
         <img src="./smashy.webp" alt="">
         <div class="component-name">Smashy Token</div>
-        <div class="component-count">1 monster meeple</div>
+        <div class="component-count">1 Smashy Token</div>
+      </div>
+      <div class="component-item">
+        <img src="./smashy.webp" alt="">
+        <div class="component-name">Smashy Health Cubes</div>
+        <div class="component-count">14 health cubes</div>
       </div>
       <div class="component-item">
         <img src="./castle.webp" alt="">
-        <div class="component-name">Castle Board</div>
-        <div class="component-count">1 castle board</div>
+        <div class="component-name">Cloud Kingdom</div>
+        <div class="component-count">1 Cloud Kingdom</div>
       </div>
       <div class="component-item">
         <img src="./cloud-wall.webp" alt="">
@@ -444,6 +459,11 @@
         <div class="component-name">Cloud Guard Token</div>
         <div class="component-count">1 guardian</div>
       </div>
+      <div class="component-item">
+        <img src="./glitter-hole.webp" alt="">
+        <div class="component-name">Glitter Hole Token</div>
+        <div class="component-count">1 token</div>
+      </div>
     </div>
   </div>
 
@@ -459,27 +479,23 @@
     <ul class="step-list">
       <li>
         <span class="step-num">1</span>
-        <span>Choose a <strong>difficulty</strong>: Easy, Medium, or Hard. This determines which faces appear on Smashy's die.</span>
+        <span>Choose a <strong>difficulty</strong>: Easy (green die), Medium (blue die), or Hard (red die).</span>
       </li>
       <li>
         <span class="step-num">2</span>
-        <span>Select which <strong>tile pairs</strong> to include. The default setup uses all standard tiles for your chosen difficulty.</span>
+        <span>Choose which <strong>tile pairs</strong> to include. For your first game, we recommend using all tiles. Place <strong>1 Wall of Fluff token</strong> on the Cloud Kingdom as a starting defense. Place the <strong>Glitter Hole token</strong> on one of the Glitter Hole tiles.</span>
       </li>
       <li>
         <span class="step-num">3</span>
-        <span>Shuffle all selected tiles face-down and lay them out in the <strong>snake-path grid</strong> (5 columns, rows as needed).</span>
+        <span>Shuffle all selected tiles face-down and lay them out in a <strong>winding path away from the castle</strong>.</span>
       </li>
       <li>
         <span class="step-num">4</span>
-        <span>Place <strong>Smashy's token</strong> on the first tile of the path (bottom row, starting column).</span>
+        <span>Place <strong>Smashy's token</strong> on the <strong>farthest tile from the castle</strong>.</span>
       </li>
       <li>
         <span class="step-num">5</span>
-        <span>Place <strong>1 Wall of Fluff token</strong> on the Castle board as a starting defense.</span>
-      </li>
-      <li>
-        <span class="step-num">6</span>
-        <span>Set <strong>Smashy's HP</strong> marker to the agreed starting value. We recommend 3 less than your maximum possible damage for a balanced challenge.</span>
+        <span>Set <strong>Smashy's HP</strong> to his maximum of <strong>14</strong>. For a recommended challenge, remove 3 HP cubes before the game begins (start at 11). To calculate your maximum possible damage, add up all damage tiles in play — remove any tiles you don't want to include from the path before starting.</span>
       </li>
     </ul>
   </div>
@@ -532,12 +548,14 @@
 
     <div class="tile-grid">
 
+      <div class="tile-group-label">Basic Tiles</div>
+
       <div class="tile-card">
-        <div class="tile-face tf-queen"><img src="./kingandqueen.webp" alt="Rainbow Royals"></div>
+        <div class="tile-face tf-lightning"><img src="./feather-arrow.webp" alt="Feather Arrow"></div>
         <div class="tile-info">
-          <div class="tile-name">Rainbow Royals</div>
-          <div class="tile-pairs">1 pair (special)</div>
-          <div class="tile-desc">Deals <strong>3 damage</strong> to Smashy and pushes him <strong>back 3 spaces</strong>. This pair is a hidden cross-match — the King and Queen tiles must be matched with each other.</div>
+          <div class="tile-name">Feather Arrow</div>
+          <div class="tile-pairs">3 pairs</div>
+          <div class="tile-desc">Deals <strong>1 damage</strong> to Smashy. A quick, light hit.</div>
         </div>
       </div>
 
@@ -551,11 +569,11 @@
       </div>
 
       <div class="tile-card">
-        <div class="tile-face tf-lightning"><img src="./feather-arrow.webp" alt="Feather Arrow"></div>
+        <div class="tile-face tf-rainbow"><img src="./rain-bow.webp" alt="Rain-Bow"></div>
         <div class="tile-info">
-          <div class="tile-name">Feather Arrow</div>
-          <div class="tile-pairs">3 pairs</div>
-          <div class="tile-desc">Deals <strong>1 damage</strong> to Smashy. A quick, light hit.</div>
+          <div class="tile-name">Rain-Bow</div>
+          <div class="tile-pairs">1 pair</div>
+          <div class="tile-desc">Deals <strong>3 damage</strong> to Smashy. Highest single-hit damage of any tile.</div>
         </div>
       </div>
 
@@ -581,17 +599,19 @@
         <div class="tile-face tf-tornado"><img src="./rainbow-tornado.webp" alt="Rainbow Tornado"></div>
         <div class="tile-info">
           <div class="tile-name">Rainbow Tornado</div>
-          <div class="tile-pairs">1 pair (hard/easy)</div>
+          <div class="tile-pairs">1 pair</div>
           <div class="tile-desc">Pushes Smashy <strong>back 3 spaces</strong>. The strongest pushback tile in the deck.</div>
         </div>
       </div>
 
+      <div class="tile-group-label">Special Tiles</div>
+
       <div class="tile-card">
-        <div class="tile-face tf-rainbow"><img src="./rain-bow.webp" alt="Rain-Bow"></div>
+        <div class="tile-face tf-queen"><img src="./kingandqueen.webp" alt="Rainbow Royals"></div>
         <div class="tile-info">
-          <div class="tile-name">Rain-Bow</div>
-          <div class="tile-pairs">1 pair (hard/easy)</div>
-          <div class="tile-desc">Deals <strong>3 damage</strong> to Smashy. Highest single-hit damage of any tile.</div>
+          <div class="tile-name">Rainbow Royals</div>
+          <div class="tile-pairs">1 pair (special)</div>
+          <div class="tile-desc">Deals <strong>3 damage</strong> to Smashy and pushes him <strong>back 3 spaces</strong>. This is not a typical match — the King tile and Queen tile look different but must be matched with each other.</div>
         </div>
       </div>
 
@@ -599,7 +619,7 @@
         <div class="tile-face tf-freeze"><img src="./freeze-wand.webp" alt="Freeze Wand"></div>
         <div class="tile-info">
           <div class="tile-name">Freeze Wand</div>
-          <div class="tile-pairs">1 pair (hard/easy)</div>
+          <div class="tile-pairs">1 pair</div>
           <div class="tile-desc"><strong>Freezes Smashy</strong> for one turn — he skips his next die roll entirely.</div>
         </div>
       </div>
@@ -609,7 +629,7 @@
         <div class="tile-info">
           <div class="tile-name">Cloud Guard</div>
           <div class="tile-pairs">1 pair</div>
-          <div class="tile-desc">After matching, place the Cloud Guard token between any tile (including a tile and the castle). Smashy <strong>stops before entering</strong> that tile. The token is removed once he reaches it.</div>
+          <div class="tile-desc">After matching, place the Cloud Guard token on any face-up tile on the board. Smashy <strong>stops on the tile before it</strong> instead of moving through. The token is removed from play once Smashy reaches it.</div>
         </div>
       </div>
 
@@ -618,7 +638,7 @@
         <div class="tile-info">
           <div class="tile-name">Wall of Fluff</div>
           <div class="tile-pairs">1 pair</div>
-          <div class="tile-desc">Adds <strong>1 defense shield</strong> to the castle. Shields absorb one breach when Smashy reaches the end.</div>
+          <div class="tile-desc">Adds <strong>1 Wall of Fluff token</strong> to the Cloud Kingdom. Each token absorbs one breach when Smashy enters the castle.</div>
         </div>
       </div>
 
@@ -627,7 +647,7 @@
         <div class="tile-info">
           <div class="tile-name">Star Wand</div>
           <div class="tile-pairs">1 pair</div>
-          <div class="tile-desc">Lets you <strong>peek at 4 face-down tiles</strong> of your choice without flipping them. Great for planning your next move.</div>
+          <div class="tile-desc">Lets you <strong>peek at up to 4 face-down tiles</strong> of your choice without flipping them. Peeked tiles are <strong>NOT considered matched</strong> and are not removed from play.</div>
         </div>
       </div>
 
@@ -636,7 +656,7 @@
         <div class="tile-info">
           <div class="tile-name">Glitter Hole</div>
           <div class="tile-pairs">1 pair</div>
-          <div class="tile-desc">After matching, activate either Glitter Hole tile at any time to <strong>remove all rock tokens</strong> from the board instantly. Rocks go back to Smashy and can be dropped again if he rolls rock.</div>
+          <div class="tile-desc">After matching, the tiles stay active. At the start of your turn (before flipping) or immediately after a match, activate either Glitter Hole tile to <strong>remove all rock tokens</strong> from the board. The Glitter Hole tiles are then removed from play.</div>
         </div>
       </div>
 
@@ -804,14 +824,14 @@
         <img src="./feather-arrow.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div>
           <div class="callout-title" style="font-size:1.1rem;">Easy</div>
-          <div class="callout-text">Die: Step 0, 1, 2. We recommend removing 3 health from Smashy's maximum health.</div>
+          <div class="callout-text">Die: Taunt, Taunt, Step 1, Step 1, Step 2, Step 2. Remove 3 health from Smashy's maximum health. Includes Rain-Bow, Rainbow Tornado, and Freeze Wand tiles.</div>
         </div>
       </div>
       <div class="callout callout-blue" style="flex-direction:column;gap:8px;text-align:center;">
         <img src="./cloud-cannon-2.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div>
           <div class="callout-title" style="font-size:1.1rem;">Medium</div>
-          <div class="callout-text">Die: Step 1, 2, 3. 2× Rock. Swap. We recommend removing 3 health from Smashy's maximum health.</div>
+          <div class="callout-text">Die: Step 1, Step 2, Step 3, Rock, Rock, Swap. Remove 3 health from Smashy's maximum health.</div>
         </div>
       </div>
     </div>
@@ -820,7 +840,7 @@
         <img src="./rain-bow.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div>
           <div class="callout-title" style="font-size:1.1rem;">Hard</div>
-          <div class="callout-text">Die: Step 1, 2, 3, 4. Swap. Rock. No health removed from Smashy and only one pair of each tile allowed in play. Good luck!</div>
+          <div class="callout-text">Die: Step 1, Step 2, Step 3, Step 4, Rock, Swap. Smashy starts at full health (14 HP). Only one pair of each tile allowed in play. Good luck!</div>
         </div>
       </div>
       <div class="callout callout-gold" style="flex-direction:column;gap:8px;text-align:center;">
