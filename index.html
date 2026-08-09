@@ -227,7 +227,8 @@ body.shake{animation:shake 0.45s ease-in-out;}
 /* Setup overlay */
 .setup-overlay{position:fixed;inset:0;z-index:300;background:linear-gradient(180deg,#8ec5e6 0%,#b8ddf0 40%,#d0edf8 100%);display:flex;align-items:center;justify-content:center;}
 .setup-overlay.off{display:none;}
-.setup-card{background:#9dc9e3;border:1px solid rgba(255,255,255,0.4);border-radius:22px;padding:24px 20px;width:90%;max-width:540px;max-height:90vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,160,210,0.4) rgba(255,255,255,0.2);}
+.setup-clouds{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.setup-card{position:relative;z-index:1;background:#9dc9e3;border:1px solid rgba(255,255,255,0.4);border-radius:22px;padding:24px 20px;width:90%;max-width:540px;max-height:90vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,160,210,0.4) rgba(255,255,255,0.2);}
 @media(min-width:1024px){.setup-card{max-width:760px;}}
 .setup-card::-webkit-scrollbar{width:6px;}
 .setup-card::-webkit-scrollbar-track{background:rgba(255,255,255,0.05);border-radius:99px;}
@@ -265,7 +266,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 .mode-btn.active-easy{background:rgba(80,210,100,0.15);border-color:rgba(80,210,100,0.45);color:#72e28a;}
 .mode-btn.active-medium{background:rgba(80,160,255,0.15);border-color:rgba(80,160,255,0.45);color:#80b4ff;}
 .mode-btn.active-hard{background:rgba(255,80,80,0.15);border-color:rgba(255,80,80,0.45);color:var(--red);}
-.setup-card .setup-title{color:var(--gold);}
+.setup-card .setup-title{color:#1a3a5a;}
 .setup-card .setup-sub{color:#1a3a5a;}
 .setup-card .setup-tile-card{background:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.55);}
 .setup-card .setup-tile-name{color:#1a3a5a;}
@@ -353,6 +354,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 </div>
 
 <div class="setup-overlay" id="setupOverlay">
+  <div class="setup-clouds" id="setupClouds"></div>
   <div class="setup-card">
     <img src="./Glitter Fight Banner.png" alt="Glitter Fight" style="width:100%;height:auto;display:block;margin:0 auto 16px;border-radius:14px;">
     <button class="btn-tutorial" onclick="showTutorial()" style="margin-bottom:20px;">Tutorial</button>
@@ -1380,19 +1382,22 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.rand
 
 // Drifting clouds
 (function(){
-  const sf=document.getElementById('sf');
   const imgs=['./cloud-1.webp','./cloud-2.webp','./cloud-3.webp'];
-  for(let i=0;i<16;i++){
-    const c=document.createElement('img'); c.className='cloud';
-    c.src=imgs[i%3];
-    const dur=60+Math.random()*80;
-    const sz=60+Math.random()*80;
-    const top=Math.random()*80;
-    const op=0.45+Math.random()*0.35;
-    const delay=-Math.random()*dur;
-    c.style.cssText=`--sz:${sz}px;--dur:${dur}s;--op:${op};top:${top}%;left:0;animation-delay:${delay}s`;
-    sf.appendChild(c);
+  function spawnClouds(container,count){
+    for(let i=0;i<count;i++){
+      const c=document.createElement('img'); c.className='cloud';
+      c.src=imgs[i%3];
+      const dur=60+Math.random()*80;
+      const sz=60+Math.random()*80;
+      const top=Math.random()*80;
+      const op=0.45+Math.random()*0.35;
+      const delay=-Math.random()*dur;
+      c.style.cssText=`--sz:${sz}px;--dur:${dur}s;--op:${op};top:${top}%;left:0;animation-delay:${delay}s`;
+      container.appendChild(c);
+    }
   }
+  spawnClouds(document.getElementById('sf'),16);
+  spawnClouds(document.getElementById('setupClouds'),16);
 })();
 
 const WARRIOR_SRC = "./rainbow-guardian.webp";
