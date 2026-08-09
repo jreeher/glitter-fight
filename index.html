@@ -422,7 +422,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
           <div class="tut-row"><span class="tut-icon"><img src="./Step 1.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Charge 1–4 steps</strong> toward your castle along the path. The further he gets, the more urgent things become!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./rock.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on a tile ahead, blocking it. Match a <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole pair and click either tile to clear all rocks instantly.</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./smashy-wall.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Place a Wall</strong> on the tile behind him — pushback abilities can't move Smashy past it!</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./Cloud Swap.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Swap!</strong> Smashy shuffles two nearby tiles — scrambling your memory. Watch out for this one!</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./Cloud Swap.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Earthquake!</strong> All tiles condense towards the castle, filling gaps left by matched tiles. Watch out!</span></div>
         </div>
         <p class="tut-text">If Smashy is <strong style="color:#b3ecff">Frozen</strong> <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;">, he skips his turn. If a <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> is on his next tile, he stops before entering.</p>
       </div>
@@ -590,14 +590,14 @@ const DICE_DEF = [
   { lbl:'Triple step — moves three!',  step3:true   },
   { lbl:'ROCK! Current tile blocked!', rock:true    },
   { lbl:'ROCK! Current tile blocked!', rock:true    },
-  { lbl:'SWAP — tiles next to Smashy!',swapAdj:true },
+  { lbl:'EARTHQUAKE — tiles shift to castle!',swapAdj:true },
 ];
 const DICE_DEF_HARD = [
   { lbl:'Charge ahead!',               step:true    },
   { lbl:'Double step — moves twice!',  step2:true   },
   { lbl:'Triple step — moves three!',  step3:true   },
   { lbl:'QUAD step — moves four!',     step4:true   },
-  { lbl:'SWAP — tiles next to Smashy!',swapAdj:true },
+  { lbl:'EARTHQUAKE — tiles shift to castle!',swapAdj:true },
   { lbl:'ROCK! Current tile blocked!', rock:true    },
 ];
 const DICE_DEF_EASY = [
@@ -1095,41 +1095,36 @@ function execMove(ri){
   const d=(G.mode==='easy'?DICE_DEF_EASY:G.mode==='hard'?DICE_DEF_HARD:DICE_DEF)[ri];
 
   if(d.swapAdj){
-    const bPos=G.bossPos;
-    const isAvail=(idx)=>idx>=0&&idx<TOTAL&&!G.matched.has(idx)&&!G.flipped.includes(idx)&&!G.rocks.includes(idx)&&idx!==bPos;
-
-    // Find nearest available tile BEHIND (lower path index)
-    let behind=null;
-    for(let i=bPos-1;i>=0;i--){ if(isAvail(i)){ behind=i; break; } }
-
-    // Find nearest available tile AHEAD (higher path index)
-    let ahead=null;
-    for(let i=bPos+1;i<TOTAL;i++){ if(isAvail(i)){ ahead=i; break; } }
-
-    let a=null, b=null, msg='';
-
-    if(ahead!==null&&behind!==null){
-      // Normal case: one ahead, one behind
-      a=ahead; b=behind;
-      msg='Smashy swaps next tile ahead and behind!';
-    } else if(ahead!==null){
-      // No tiles behind — find two ahead
-      a=ahead;
-      for(let i=ahead+1;i<TOTAL;i++){ if(isAvail(i)){ b=i; break; } }
-      msg='No tiles behind — Smashy swaps two tiles ahead!';
-    } else if(behind!==null){
-      // No tiles ahead — find two behind
-      a=behind;
-      for(let i=behind-1;i>=0;i--){ if(isAvail(i)){ b=i; break; } }
-      msg='No tiles ahead — Smashy swaps two tiles behind!';
+    const matchedCount = G.matched.size;
+    if(matchedCount === 0){
+      showBossPopup('<img src="./Cloud Swap.png" style="width:72px;height:72px;object-fit:contain;">','Earthquake!','No gaps to fill!');
+      render(); return;
     }
-
-    if(a!==null&&b!==null){
-      swapIndices(a,b,true);
-      showBossPopup('<img src="./Cloud Swap.png" style="width:72px;height:72px;object-fit:contain;">','Swap!',msg);
-    } else {
-      showBossPopup('<img src="./Cloud Swap.png" style="width:72px;height:72px;object-fit:contain;">','Swap Failed!','No tiles to mix...');
+    // Collect non-matched cards in order, tracking key positions
+    const nonMatchedCards=[], nonMatchedRocks=[];
+    let bossRelIdx=-1, wallRelIdx=-1;
+    for(let i=0;i<TOTAL;i++){
+      if(!G.matched.has(i)){
+        if(i===G.bossPos) bossRelIdx=nonMatchedCards.length;
+        if(G.wall!==null&&i===G.wall) wallRelIdx=nonMatchedCards.length;
+        nonMatchedRocks.push(G.rocks.includes(i));
+        nonMatchedCards.push(G.cards[i]);
+      }
     }
+    // Rebuild matched as 0..matchedCount-1 (empty front slots)
+    G.matched=new Set();
+    for(let i=0;i<matchedCount;i++) G.matched.add(i);
+    // Place non-matched cards at matchedCount..TOTAL-1
+    const newRocks=[];
+    for(let j=0;j<nonMatchedCards.length;j++){
+      const newIdx=matchedCount+j;
+      G.cards[newIdx]=nonMatchedCards[j];
+      if(nonMatchedRocks[j]) newRocks.push(newIdx);
+    }
+    G.rocks=newRocks;
+    if(bossRelIdx>=0) G.bossPos=matchedCount+bossRelIdx;
+    if(G.wall!==null&&wallRelIdx>=0) G.wall=matchedCount+wallRelIdx;
+    showBossPopup('<img src="./Cloud Swap.png" style="width:72px;height:72px;object-fit:contain;">','Earthquake!','Tiles shift towards the castle!');
     render(); return;
   }
 
