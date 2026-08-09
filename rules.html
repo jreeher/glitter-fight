@@ -10,18 +10,27 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #f5f0e8;
+    background: linear-gradient(180deg,#8ec5e6 0%,#b8ddf0 40%,#d0edf8 100%) fixed;
     color: #2a1f0f;
     font-family: 'Nunito', sans-serif;
     font-size: 15px;
     line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
+
+  /* ── DRIFTING CLOUDS ── */
+  .cloud-bg { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .cloud { position:absolute; pointer-events:none; width:var(--sz,80px); opacity:var(--op,0.6); animation:drift var(--dur,30s) linear infinite; filter:drop-shadow(0 2px 6px rgba(100,160,210,0.25)); }
+  @keyframes drift { from{transform:translateX(110vw);} to{transform:translateX(-110vw);} }
 
   /* ── PAGE LAYOUT ── */
   .page {
     max-width: 820px;
     margin: 0 auto;
     padding: 32px 24px 64px;
+    position: relative;
+    z-index: 1;
   }
 
   /* ── COVER ── */
@@ -363,6 +372,7 @@
 </style>
 </head>
 <body>
+<div class="cloud-bg" id="cloudBg"></div>
 <div class="page">
 
   <!-- ══ COVER ══ -->
@@ -837,5 +847,23 @@
   </div>
 
 </div>
+<script>
+(function(){
+  const bg = document.getElementById('cloudBg');
+  const imgs = ['./cloud-1.webp','./cloud-2.webp','./cloud-3.webp'];
+  for(let i=0;i<16;i++){
+    const c = document.createElement('img');
+    c.className = 'cloud';
+    c.src = imgs[i%3];
+    const dur = 60 + Math.random()*80;
+    const sz  = 60 + Math.random()*80;
+    const top = Math.random()*90;
+    const op  = 0.45 + Math.random()*0.35;
+    const delay = -Math.random()*dur;
+    c.style.cssText = `--sz:${sz}px;--dur:${dur}s;--op:${op};top:${top}%;left:0;animation-delay:${delay}s`;
+    bg.appendChild(c);
+  }
+})();
+</script>
 </body>
 </html>
