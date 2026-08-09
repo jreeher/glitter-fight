@@ -287,8 +287,8 @@ body.shake{animation:shake 0.45s ease-in-out;}
 .btn-start{width:100%;padding:12px;font-family:'Fredoka One',cursive;font-size:1.1rem;letter-spacing:1px;background:linear-gradient(135deg,var(--gold),#ff8c42);color:#1a1200;border:none;border-radius:99px;cursor:pointer;transition:transform 0.12s;}
 .btn-start:hover{transform:translateY(-2px) scale(1.02);}
 .btn-start:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
-.btn-tutorial{width:100%;padding:10px;font-family:'Fredoka One',cursive;font-size:0.95rem;letter-spacing:1px;background:rgba(160,90,255,0.55);color:#f0dcff;border:1px solid rgba(190,140,255,0.7);border-radius:99px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:8px;}
-.btn-tutorial:hover{background:rgba(160,90,255,0.72);color:#fff;transform:translateY(-1px);}
+.btn-tutorial{width:100%;padding:10px;font-family:'Fredoka One',cursive;font-size:0.95rem;letter-spacing:1px;background:rgba(245,200,66,0.55);color:#6a4800;border:1px solid rgba(200,160,20,0.7);border-radius:99px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:8px;}
+.btn-tutorial:hover{background:rgba(245,200,66,0.75);color:#3a2800;transform:translateY(-1px);}
 /* Tutorial overlay */
 .tutorial-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 .tutorial-overlay.off{display:none;}
@@ -1063,7 +1063,7 @@ function applyPower(id){
   const pi = (src,s=72) => `<img src="${src}" style="width:${s}px;height:${s}px;object-fit:contain;">`;
   if(id==='lightning')   { damageBoss(1,''); showPopup(pi('./feather-arrow.webp'),'Feather Arrow!','-1 HP to Smashy','#8bc34a'); }
   else if(id==='warrior'){ damageBoss(1,''); G.warriorMode=true; showActionPopup(pi('./rainbow-guardian.webp'),'Glitter Guard!','Click a matched tile! -1 HP','#4da6ff'); }
-  else if(id==='shield') { G.shields++; renderShields(); showPopup(pi('./cloud-wall.webp'),'Wall of Fluff!','Castle protected!','#b57bff'); }
+  else if(id==='shield') { G.shields++; renderShields(); showPopup(pi('./cloud-wall.webp'),'Wall of Fluff!','Castle protected!','#f5c842'); }
   else if(id==='starmap'){
     const avail=countPeekable();
     if(avail===0){ showPopup(pi('./star-wand.webp'),'Sparkle Wand!','No tiles to peek!','#f5c842'); G.powerDelay=1400; }
@@ -1207,7 +1207,7 @@ function execMove(ri){
         G.shields--;
         renderShields();
         rockHitCastle();
-        showPopup('<img src="./cloud-wall.webp" style="width:72px;height:72px;object-fit:contain;">','Shield Activated!','Castle protected!','#b57bff');
+        showPopup('<img src="./cloud-wall.webp" style="width:72px;height:72px;object-fit:contain;">','Shield Activated!','Castle protected!','#f5c842');
       } else {
         G.phase='over'; G.bossPos=TOTAL; render();
         const soc = document.getElementById('smashyOnCastle');
