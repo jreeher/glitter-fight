@@ -40,19 +40,11 @@
     background: linear-gradient(160deg, #4aa8d8 0%, #87ceeb 50%, #4aa8d8 100%);
     border-radius: 18px;
     margin-bottom: 40px;
-    border: 3px solid #c8a030;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 0 60px rgba(200,160,48,0.08);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     position: relative;
     overflow: hidden;
   }
-  .cover::before {
-    content: '';
-    position: absolute;
-    inset: 8px;
-    border: 1px solid rgba(200,160,48,0.3);
-    border-radius: 12px;
-    pointer-events: none;
-  }
+  .cover::before { display: none; }
   .cover-logo {
     width: 90px;
     height: 90px;
@@ -100,6 +92,9 @@
   /* ── SECTION HEADERS ── */
   .section {
     margin-bottom: 36px;
+    background: white;
+    border-radius: 14px;
+    padding: 20px 24px;
   }
   .section-title {
     font-family: 'Fredoka One', cursive;
@@ -289,6 +284,7 @@
     object-fit: contain;
     vertical-align: middle;
     display: inline-block;
+    border-radius: 6px;
   }
   .dice-mode {
     font-size: 0.72rem;
@@ -724,7 +720,7 @@
           <td>Smashy swaps the next available face-down tile in front and behind him. If no tiles are behind, he swaps two ahead. If no tiles are ahead, he swaps two behind. If no swap is possible, the turn passes to the player.</td>
         </tr>
         <tr>
-          <td><img src="./Cloud Arrow.png" class="dice-icon" alt="Taunt"></td>
+          <td><img src="./cloud-2-2.png" class="dice-icon" alt="Taunt"></td>
           <td><strong>Taunt</strong></td>
           <td>Smashy taunts the players and does nothing this turn. Thankfully, only your pride is hurt!</td>
         </tr>
@@ -793,14 +789,14 @@
         <img src="./feather-arrow.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div>
           <div class="callout-title" style="font-size:1.1rem;">Easy</div>
-          <div class="callout-text">Die: Taunt, Taunt, Step 1, Step 1, Step 2, Step 2. Remove 3 health from Smashy's maximum health. Remove Glitter Hole, Glitter Guard, and Star Wand tiles.</div>
+          <div class="callout-text">Easy Dice (Blue) — 9 Smashy HP (all black). Remove Glitter Hole, Glitter Guard, and Sparkle Wand tiles.</div>
         </div>
       </div>
       <div class="callout callout-blue" style="flex-direction:column;gap:8px;text-align:center;">
         <img src="./cloud-cannon-2.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div>
           <div class="callout-title" style="font-size:1.1rem;">Medium</div>
-          <div class="callout-text">Die: Step 1, Step 2, Step 3, Rock, Rock, Swap. Remove 3 health from Smashy's maximum health. All tiles in play.</div>
+          <div class="callout-text">Medium Dice (Purple) — 12 Smashy HP (all black). All tiles in play.</div>
         </div>
       </div>
     </div>
@@ -809,7 +805,7 @@
         <img src="./rain-bow.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div>
           <div class="callout-title" style="font-size:1.1rem;">Hard</div>
-          <div class="callout-text">Die: Step 1, Step 2, Step 3, Step 4, Rock, Swap. Smashy starts at full health. Only one pair of each tile allowed in play. Good luck!</div>
+          <div class="callout-text">Hard Dice (Yellow) — 15 Smashy HP (black + yellow). Smashy starts at full health. Good luck!</div>
         </div>
       </div>
       <div class="callout callout-gold" style="flex-direction:column;gap:8px;text-align:center;">
