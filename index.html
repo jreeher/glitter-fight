@@ -424,7 +424,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
           <div class="tut-row"><span class="tut-icon"><img src="./smashy-wall.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Place a Wall</strong> on the tile behind him — pushback abilities can't move Smashy past it!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./swap-dice.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Swap!</strong> Smashy shuffles two nearby tiles — scrambling your memory. Watch out for this one!</span></div>
         </div>
-        <p class="tut-text">If Smashy is <strong style="color:#b3ecff">Frozen</strong> <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;">, he skips his turn. If a <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Cloud Guard</strong> is on his next tile, he stops before entering.</p>
+        <p class="tut-text">If Smashy is <strong style="color:#b3ecff">Frozen</strong> <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;">, he skips his turn. If a <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> is on his next tile, he stops before entering.</p>
       </div>
 
       <div class="tutorial-step" id="tutStep4">
@@ -559,17 +559,17 @@ function generatePath(n) {
 const TILE_CONFIG = [
   { id:'queen',     name:'Rainbow Royals',    img:'./queen.webp',            fc:'face-queen',     damage:3, defaultPairs:1, max:1, pairWith:'king', setupImg:'./kingandqueen.webp', desc:'3 damage + pushes Smashy back 3 spaces!' },
   { id:'king',      name:'King',           img:'./king.webp',              fc:'face-king',      damage:0, defaultPairs:0, max:1, hidden:true, desc:'' },
-  { id:'fireball',  name:'Cumulus Cannon',   img:'./cloud-cannon-2.webp',   fc:'face-fireball',  damage:2, defaultPairs:1, max:2, desc:'Deals 2 damage to Smashy' },
   { id:'lightning', name:'Feather Arrow',  img:'./feather-arrow.webp',    fc:'face-lightning', damage:1, defaultPairs:1, max:2, desc:'Deals 1 damage to Smashy' },
-  { id:'warrior',   name:'Cloud Guard',    img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + place between any two tiles to stop Smashy' },
-  { id:'shield',    name:'Wall of Fluff',  img:'./cloud-wall.webp',       fc:'face-shield',    damage:0, defaultPairs:1, max:2, desc:'Blocks one castle breach' },
-  { id:'starmap',   name:'Glitter Wand',   img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at 4 face-down tiles' },
+  { id:'fireball',  name:'Cumulus Cannon',   img:'./cloud-cannon-2.webp',   fc:'face-fireball',  damage:2, defaultPairs:1, max:2, desc:'Deals 2 damage to Smashy' },
+  { id:'rainbow',   name:'Rain-Bow',       img:'./rain-bow.webp',         fc:'face-rainbow',   damage:3, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Deals 3 damage to Smashy' },
   { id:'comet',     name:'Cloudy',         img:'./wind-blast.webp',       fc:'face-comet',     damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'1 damage + pushes Smashy back 1 space' },
   { id:'unicorn',   name:'Unicorn Horn',   img:'./unicorn-horn.webp',     fc:'face-unicorn',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:2, desc:'1 damage + pushes Smashy back 2 spaces' },
-  { id:'glitter',   name:'Glitter Hole',   img:'./glitter-hole.webp',     fc:'face-glitter',   damage:2, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Removes all rocks + 2 damage' },
   { id:'tornado',   name:'Rainbow Tornado',img:'./rainbow-tornado.webp',  fc:'face-tornado',   damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Pushes Smashy back 3 spaces' },
+  { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + place between any two tiles to stop Smashy' },
+  { id:'shield',    name:'Wall of Fluff',  img:'./cloud-wall.webp',       fc:'face-shield',    damage:0, defaultPairs:1, max:2, desc:'Blocks one castle breach' },
+  { id:'starmap',   name:'Glitter Wand',   img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at 4 face-down tiles' },
+  { id:'glitter',   name:'Glitter Hole',   img:'./glitter-hole.webp',     fc:'face-glitter',   damage:2, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Removes all rocks + 2 damage' },
   { id:'freeze',    name:'Freeze Wand',    img:'./freeze-wand.webp',      fc:'face-freeze',    damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Freezes Smashy for one turn + 1 damage' },
-  { id:'rainbow',   name:'Rain-Bow',       img:'./rain-bow.webp',         fc:'face-rainbow',   damage:3, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Deals 3 damage to Smashy' },
 ];
 let setupCounts = {};
 
@@ -897,7 +897,7 @@ function renderStatus(){
   if(popup.classList.contains('action-mode')){ banner.className='context-banner'; banner.innerHTML=''; return; }
   if(G.warriorMode){
     banner.className = 'context-banner warrior';
-    banner.innerHTML = `<img src="./rainbow-guardian.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Cloud Guard</div><div class="cb-sub">Click a matched tile to place your guardian</div>`;
+    banner.innerHTML = `<img src="./rainbow-guardian.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Glitter Guard</div><div class="cb-sub">Click a matched tile to place your guardian</div>`;
   } else if(G.peek){
     const left = G.peekTarget - G.peekN;
     banner.className = 'context-banner peek';
@@ -1043,7 +1043,7 @@ function applyPower(id){
   G.powerDelay=480;
   const pi = (src,s=72) => `<img src="${src}" style="width:${s}px;height:${s}px;object-fit:contain;">`;
   if(id==='lightning')   { damageBoss(1,''); showPopup(pi('./feather-arrow.webp'),'Feather Arrow!','-1 HP to Smashy','#8bc34a'); }
-  else if(id==='warrior'){ damageBoss(1,''); G.warriorMode=true; showActionPopup(pi('./rainbow-guardian.webp'),'Cloud Guard!','Click a matched tile! -1 HP','#4da6ff'); }
+  else if(id==='warrior'){ damageBoss(1,''); G.warriorMode=true; showActionPopup(pi('./rainbow-guardian.webp'),'Glitter Guard!','Click a matched tile! -1 HP','#4da6ff'); }
   else if(id==='shield') { G.shields++; renderShields(); showPopup(pi('./cloud-wall.webp'),'Wall of Fluff!','Castle protected!','#b57bff'); }
   else if(id==='starmap'){
     const avail=countPeekable();
@@ -1209,7 +1209,7 @@ function execMove(ri){
     // Check warrior on next tile — blocks before entry
     if(G.warriors.has(nextPos)){
       G.warriors.delete(nextPos);
-      setTimeout(()=>showPopup('<img src="./rainbow-guardian.webp" style="width:72px;height:72px;object-fit:contain;">','Blocked!','Cloud Guard stops Smashy!','#4da6ff'),900);
+      setTimeout(()=>showPopup('<img src="./rainbow-guardian.webp" style="width:72px;height:72px;object-fit:contain;">','Blocked!','Glitter Guard stops Smashy!','#4da6ff'),900);
       break;
     }
     G.bossPos=nextPos;
