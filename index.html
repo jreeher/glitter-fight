@@ -11,9 +11,9 @@
 <link rel="preload" href="./smashy.webp" as="image">
 <link rel="preload" href="./castle.webp" as="image">
 <link rel="preload" href="./banner.webp" as="image">
-<link rel="preload" href="./rock-3.webp" as="image">
-<link rel="preload" href="./step-dice.webp" as="image">
-<link rel="preload" href="./swap-dice.webp" as="image">
+<link rel="preload" href="./rock.png" as="image">
+<link rel="preload" href="./Step 1.png" as="image">
+<link rel="preload" href="./Cloud Swap.png" as="image">
 <link rel="preload" href="./feather-arrow.webp" as="image">
 <link rel="preload" href="./rainbow-guardian.webp" as="image">
 <link rel="preload" href="./cloud-wall.webp" as="image">
@@ -395,7 +395,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
           <div class="tut-row"><span class="tut-icon">✅</span><span><strong style="color:var(--green)">Match!</strong> Both tiles show the same image — their power activates immediately. The tiles stay face-up and are removed from play.</span></div>
           <div class="tut-row"><span class="tut-icon">❌</span><span><strong style="color:var(--red)">No match.</strong> Both tiles flip back face-down, and Smashy takes his turn. Try to remember where they were!</span></div>
         </div>
-        <p class="tut-text">Rocks <img src="./rock-3.webp" style="width:16px;height:16px;vertical-align:middle;"> dropped by Smashy block tiles — match a <img src="./glitter-hole.webp" style="width:16px;height:16px;vertical-align:middle;"> Glitter Hole pair and click either tile to remove them all instantly!</p>
+        <p class="tut-text">Rocks <img src="./rock.png" style="width:16px;height:16px;vertical-align:middle;"> dropped by Smashy block tiles — match a <img src="./glitter-hole.webp" style="width:16px;height:16px;vertical-align:middle;"> Glitter Hole pair and click either tile to remove them all instantly!</p>
       </div>
 
       <div class="tutorial-step" id="tutStep2">
@@ -419,10 +419,10 @@ body.shake{animation:shake 0.45s ease-in-out;}
         <div class="tut-step-title">Smashy's Turn</div>
         <p class="tut-text">After every pair of tile flips — whether you matched or not — Smashy rolls a die and does one of these:</p>
         <div class="tut-box">
-          <div class="tut-row"><span class="tut-icon"><img src="./step-dice.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Charge 1–4 steps</strong> toward your castle along the path. The further he gets, the more urgent things become!</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./rock-3.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on a tile ahead, blocking it. Match a <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole pair and click either tile to clear all rocks instantly.</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./Step 1.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Charge 1–4 steps</strong> toward your castle along the path. The further he gets, the more urgent things become!</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./rock.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on a tile ahead, blocking it. Match a <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole pair and click either tile to clear all rocks instantly.</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./smashy-wall.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Place a Wall</strong> on the tile behind him — pushback abilities can't move Smashy past it!</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./swap-dice.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Swap!</strong> Smashy shuffles two nearby tiles — scrambling your memory. Watch out for this one!</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./Cloud Swap.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Swap!</strong> Smashy shuffles two nearby tiles — scrambling your memory. Watch out for this one!</span></div>
         </div>
         <p class="tut-text">If Smashy is <strong style="color:#b3ecff">Frozen</strong> <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;">, he skips his turn. If a <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> is on his next tile, he stops before entering.</p>
       </div>
@@ -858,7 +858,7 @@ function renderGrid(){
 
       const faceContent = card.img ? `<img src="${card.img}" style="width:75%;height:75%;object-fit:contain;" onerror="this.style.display='none'">` : card.emoji;
       const hpPct = Math.max(0, G.hp/G.maxHp*100);
-      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock-3.webp" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
+      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock.png" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
 
       if(isGlitterPending && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
       if(G.warriorMode && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
@@ -881,7 +881,7 @@ function rockHitCastle(){
   const old = strip.querySelector('.castle-rock');
   if(old) old.remove();
   const rock = document.createElement('img');
-  rock.src = './rock-3.webp';
+  rock.src = './rock.png';
   rock.className = 'castle-rock';
   strip.appendChild(rock);
   strip.classList.remove('castle-shaking');
@@ -1126,9 +1126,9 @@ function execMove(ri){
 
     if(a!==null&&b!==null){
       swapIndices(a,b,true);
-      showBossPopup('<img src="./swap-dice.webp" style="width:72px;height:72px;object-fit:contain;">','Swap!',msg);
+      showBossPopup('<img src="./Cloud Swap.png" style="width:72px;height:72px;object-fit:contain;">','Swap!',msg);
     } else {
-      showBossPopup('<img src="./swap-dice.webp" style="width:72px;height:72px;object-fit:contain;">','Swap Failed!','No tiles to mix...');
+      showBossPopup('<img src="./Cloud Swap.png" style="width:72px;height:72px;object-fit:contain;">','Swap Failed!','No tiles to mix...');
     }
     render(); return;
   }
@@ -1144,24 +1144,24 @@ function execMove(ri){
     if(rockTarget === null){
       if(G.rocks.length > 0){
         G.rocks.shift();
-        showBossPopup('<img src="./rock-3.webp" style="width:72px;height:72px;object-fit:contain;">','Rock Off the Map!','Oldest rock removed permanently!');
+        showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;">','Rock Off the Map!','Oldest rock removed permanently!');
       } else {
-        showBossPopup('<img src="./rock-3.webp" style="width:72px;height:72px;object-fit:contain;">','Smashy Grumbles...','No tiles to block!');
+        showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;">','Smashy Grumbles...','No tiles to block!');
       }
       render(); return;
     }
     if(G.rocks.length>=2){
       G.rocks.shift(); G.rocks.push(rockTarget);
-      showBossPopup('<img src="./rock-3.webp" style="width:72px;height:72px;object-fit:contain;">','Rock Moved!','Oldest rock relocated!');
+      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;">','Rock Moved!','Oldest rock relocated!');
     } else {
       G.rocks.push(rockTarget);
-      showBossPopup('<img src="./rock-3.webp" style="width:72px;height:72px;object-fit:contain;">','Rock Dropped!','A tile ahead is blocked!');
+      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;">','Rock Dropped!','A tile ahead is blocked!');
     }
     render(); return;
   }
 
   if(d.miss){
-    showBossPopup('<span style="display:inline-flex;align-items:center;"><img src="./rock.webp" style="width:72px;height:72px;object-fit:contain;"><img src="./rock.webp" style="width:72px;height:72px;object-fit:contain;margin-left:-29px;"></span>','Smashy is taunting you!','');
+    showBossPopup('<img src="./Cloud Arrow.png" style="width:72px;height:72px;object-fit:contain;">','Smashy is taunting you!','');
     render(); return;
   }
 
@@ -1180,11 +1180,7 @@ function execMove(ri){
   const steps = d.step?1:d.step2?2:d.step3?3:d.step4?4:0;
   const labels = {1:'Charge!',2:'Double Step!',3:'Triple Step!',4:'QUAD Step!'};
   const subs = {1:'Smashy charges ahead!',2:'Smashy moves twice!',3:'Smashy moves three times!',4:'Smashy moves four times!'};
-  const imgSize = steps > 1 ? Math.floor(72 / steps * 1.5) : 72;
-  const footImg = `<img src="./step-dice.webp" style="width:${imgSize}px;height:${imgSize}px;object-fit:contain;flex-shrink:0;">`;
-  const footHtml = steps > 1
-    ? `<span style="display:flex;align-items:center;justify-content:center;gap:2px;">${footImg.repeat(steps)}</span>`
-    : footImg;
+  const footHtml = `<img src="./Step ${steps}.png" style="width:72px;height:72px;object-fit:contain;">`;
   showBossPopup(footHtml, labels[steps], subs[steps]);
 
   const startPos=G.bossPos;
