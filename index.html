@@ -567,7 +567,7 @@ const TILE_CONFIG = [
   { id:'tornado',   name:'Rainbow Tornado',img:'./rainbow-tornado.webp',  fc:'face-tornado',   damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Pushes Smashy back 3 spaces' },
   { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + place between any two tiles to stop Smashy' },
   { id:'shield',    name:'Wall of Fluff',  img:'./cloud-wall.webp',       fc:'face-shield',    damage:0, defaultPairs:1, max:2, desc:'Blocks one castle breach' },
-  { id:'starmap',   name:'Glitter Wand',   img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at 4 face-down tiles' },
+  { id:'starmap',   name:'Sparkle Wand',   img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at 4 face-down tiles' },
   { id:'glitter',   name:'Glitter Hole',   img:'./glitter-hole.webp',     fc:'face-glitter',   damage:2, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Removes all rocks + 2 damage' },
   { id:'freeze',    name:'Freeze Wand',    img:'./freeze-wand.webp',      fc:'face-freeze',    damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Freezes Smashy for one turn + 1 damage' },
 ];
@@ -1047,8 +1047,8 @@ function applyPower(id){
   else if(id==='shield') { G.shields++; renderShields(); showPopup(pi('./cloud-wall.webp'),'Wall of Fluff!','Castle protected!','#b57bff'); }
   else if(id==='starmap'){
     const avail=countPeekable();
-    if(avail===0){ showPopup(pi('./star-wand.webp'),'Glitter Wand!','No tiles to peek!','#f5c842'); G.powerDelay=1400; }
-    else { G.peek=true; G.peekN=0; G.peekTarget=Math.min(4,avail); G.peekIdx=[]; showActionPopup(pi('./star-wand.webp'),'Glitter Wand!',`Click ${G.peekTarget} tile${G.peekTarget!==1?'s':''} to peek!`,'#f5c842'); }
+    if(avail===0){ showPopup(pi('./star-wand.webp'),'Sparkle Wand!','No tiles to peek!','#f5c842'); G.powerDelay=1400; }
+    else { G.peek=true; G.peekN=0; G.peekTarget=Math.min(4,avail); G.peekIdx=[]; showActionPopup(pi('./star-wand.webp'),'Sparkle Wand!',`Click ${G.peekTarget} tile${G.peekTarget!==1?'s':''} to peek!`,'#f5c842'); }
   }
   else if(id==='fireball'){ damageBoss(2,''); showPopup(pi('./cloud-cannon-2.webp'),'Cumulus Cannon!','-2 HP to Smashy!','#ff8c42'); }
   else if(id==='comet'){ pushBackN(1); damageBoss(1,''); showPopup(pi('./wind-blast.webp'),'Cloudy!','Smashy pushed back 1! -1 HP','#c8a856'); G.powerDelay=1400; }
