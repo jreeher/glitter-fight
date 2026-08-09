@@ -335,7 +335,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 
 <div class="setup-overlay" id="setupOverlay">
   <div class="setup-card">
-    <div class="setup-title" style="margin-bottom:16px;">Glitter Fight!</div>
+    <img src="./Glitter Fight Banner.png" alt="Glitter Fight" style="width:100%;max-width:340px;height:auto;display:block;margin:0 auto 16px;">
     <button class="btn-tutorial" onclick="showTutorial()" style="margin-bottom:20px;">Tutorial</button>
     <div class="setup-mode-box" id="modeBox" style="margin-bottom:14px;">
       <div class="setup-mode-label"><strong>Difficulty</strong></div>
@@ -721,7 +721,7 @@ function updateSetupStats() {
   } else {
     slider.disabled = false;
     slider.style.opacity = '';
-    if (!userChangedHp) slider.value = Math.max(1, effectiveMax - 6);
+    if (!userChangedHp) slider.value = Math.max(1, effectiveMax - 3);
     else if (parseInt(slider.value) > effectiveMax) slider.value = effectiveMax;
   }
   document.getElementById('hpSliderVal').textContent = slider.value;
