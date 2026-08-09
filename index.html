@@ -62,7 +62,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(180deg,#8ec5e6 0
 .btn-reset{width:100%;padding:9px 14px;font-family:'Fredoka One',cursive;font-size:0.95rem;letter-spacing:1px;border:1px solid rgba(30,80,130,0.25);border-radius:99px;background:rgba(255,255,255,0.45);color:#1a3a5a;cursor:pointer;transition:background 0.15s,transform 0.1s;}
 .btn-reset:hover{background:rgba(255,255,255,0.65);transform:translateY(-1px);}
 .main{display:flex;flex-direction:column;gap:9px;}
-.grid-wrapper{background:#9dc9e3;border-radius:16px;padding:12px;border:1px solid rgba(80,150,200,0.35);}
+.grid-wrapper{background:white;border-radius:16px;padding:12px;border:1px solid rgba(80,150,200,0.35);}
 .grid-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
 .grid-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;color:#1e4d6a;}
 .pairs-badge{font-size:0.73rem;font-weight:700;color:#7a5500;background:rgba(245,200,66,0.35);padding:2px 9px;border-radius:99px;border:1px solid rgba(180,130,0,0.4);}
@@ -161,7 +161,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(180deg,#8ec5e6 0
 .peek-banner{display:none!important;}
 
 /* Sidebar */
-.panel{background:#9dc9e3;border-radius:13px;padding:13px;border:1px solid rgba(80,150,200,0.35);}
+.panel{background:white;border-radius:13px;padding:13px;border:1px solid rgba(80,150,200,0.35);}
 .ptitle{font-size:0.63rem;text-transform:uppercase;letter-spacing:2px;color:#1e4d6a;margin-bottom:9px;}
 .boss-face{text-align:center;margin-bottom:7px;display:flex;align-items:center;justify-content:center;gap:10px;}
 .boss-big{font-size:2.7rem;display:block;animation:boss-bob 2s ease-in-out infinite;}
@@ -225,7 +225,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 .card.review-matched .card-face{opacity:0.38;}
 
 /* Setup overlay */
-.setup-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+.setup-overlay{position:fixed;inset:0;z-index:300;background:linear-gradient(180deg,#8ec5e6 0%,#b8ddf0 40%,#d0edf8 100%);display:flex;align-items:center;justify-content:center;}
 .setup-overlay.off{display:none;}
 .setup-card{background:var(--bg2);border:1px solid rgba(255,255,255,0.14);border-radius:22px;padding:24px 20px;width:90%;max-width:540px;max-height:90vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,160,210,0.4) rgba(255,255,255,0.05);}
 @media(min-width:1024px){.setup-card{max-width:760px;}}
@@ -335,7 +335,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 
 <div class="setup-overlay" id="setupOverlay">
   <div class="setup-card">
-    <img src="./Glitter Fight Banner.png" alt="Glitter Fight" style="width:100%;max-width:340px;height:auto;display:block;margin:0 auto 16px;border-radius:14px;">
+    <img src="./Glitter Fight Banner.png" alt="Glitter Fight" style="width:100%;height:auto;display:block;margin:0 auto 16px;border-radius:14px;">
     <button class="btn-tutorial" onclick="showTutorial()" style="margin-bottom:20px;">Tutorial</button>
     <div class="setup-mode-box" id="modeBox" style="margin-bottom:14px;">
       <div class="setup-mode-label"><strong>Difficulty</strong></div>
