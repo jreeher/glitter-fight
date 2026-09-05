@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#170b22"/>
+      <stop offset="100%" stop-color="#050308"/>
+    </linearGradient>
+    <radialGradient id="lava" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#fff3b0"/>
+      <stop offset="35%" stop-color="#ff8c1a"/>
+      <stop offset="70%" stop-color="#d6270f"/>
+      <stop offset="100%" stop-color="#7a0e08"/>
+    </radialGradient>
+    <linearGradient id="mountain" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a5a3c"/>
+      <stop offset="35%" stop-color="#5c3a2c"/>
+      <stop offset="100%" stop-color="#2a1a16"/>
+    </linearGradient>
+    <linearGradient id="cloudFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a4258"/>
+      <stop offset="100%" stop-color="#2b2636"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="200" height="200" fill="url(#sky)"/>
+
+  <!-- thunderclouds -->
+  <g fill="url(#cloudFill)" opacity="0.95">
+    <ellipse cx="40" cy="38" rx="32" ry="15"/>
+    <ellipse cx="64" cy="30" rx="24" ry="13"/>
+    <ellipse cx="142" cy="36" rx="34" ry="16"/>
+    <ellipse cx="166" cy="50" rx="23" ry="12"/>
+    <ellipse cx="26" cy="50" rx="19" ry="10"/>
+  </g>
+
+  <!-- lightning bolts -->
+  <polygon points="70,46 58,74 70,74 56,108 86,66 72,66 84,46" fill="#ffe066" stroke="#fff6c8" stroke-width="1"/>
+  <polygon points="150,54 140,80 150,80 138,114 164,76 152,76 162,54" fill="#ffe066" stroke="#fff6c8" stroke-width="1" opacity="0.9"/>
+
+  <!-- glow halo, tight around the crater -->
+  <ellipse cx="100" cy="76" rx="36" ry="18" fill="#ff6a1a" opacity="0.25"/>
+
+  <!-- volcano mountain -->
+  <polygon points="100,58 172,192 28,192" fill="url(#mountain)" stroke="#c98a5a" stroke-width="2"/>
+  <polygon points="100,58 172,192 130,192" fill="#000000" opacity="0.32"/>
+  <polyline points="100,58 88,86" stroke="#d8a878" stroke-width="2" opacity="0.7" fill="none"/>
+
+  <!-- crater rim -->
+  <ellipse cx="100" cy="74" rx="30" ry="15" fill="#180d0a"/>
+  <!-- crater glow -->
+  <ellipse cx="100" cy="72" rx="24" ry="12" fill="url(#lava)"/>
+
+  <!-- lava cracks flowing down the visible slope -->
+  <path d="M90,82 Q82,112 74,148" stroke="#ff7a1a" stroke-width="4" stroke-linecap="round" opacity="0.9" fill="none"/>
+  <path d="M112,84 Q122,114 132,148" stroke="#ff7a1a" stroke-width="4" stroke-linecap="round" opacity="0.9" fill="none"/>
+  <path d="M100,86 Q100,114 102,142" stroke="#ffb347" stroke-width="3" stroke-linecap="round" opacity="0.75" fill="none"/>
+</svg>

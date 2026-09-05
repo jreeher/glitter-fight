@@ -10,6 +10,8 @@
 <link rel="icon" href="./tf-logo.webp">
 <link rel="preload" href="./smashy.webp" as="image">
 <link rel="preload" href="./castle.webp" as="image">
+<link rel="preload" href="./volcano-start.svg" as="image">
+<link rel="preload" href="./rainbow-bridge-end.svg" as="image">
 <link rel="preload" href="./banner.webp" as="image">
 <link rel="preload" href="./rock.png" as="image">
 <link rel="preload" href="./Step 1.png" as="image">
@@ -97,6 +99,12 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(180deg,#8ec5e6 0
 }
 .castle-icon{font-size:1.5rem;filter:drop-shadow(0 0 6px rgba(245,200,66,0.5));}
 .castle-name{font-family:'Fredoka One',cursive;font-size:0.85rem;color:var(--gold);letter-spacing:1px;}
+
+/* Start / End path markers — decorative, never flippable */
+.special-tile{aspect-ratio:1;border-radius:9px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:default;}
+.special-tile img{width:88%;height:88%;object-fit:contain;}
+.special-start{background:linear-gradient(135deg,#2a1010,#3a1818);border:2px solid rgba(255,90,40,0.55);box-shadow:0 0 12px rgba(255,60,20,0.35);}
+.special-end{background:linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.3));border:2px solid rgba(245,200,66,0.6);box-shadow:0 0 12px rgba(245,200,66,0.4);}
 .shield-pips{display:flex;gap:3px;}
 .shield-pip{width:14px;height:14px;background:rgba(181,123,255,0.25);border:1px solid rgba(181,123,255,0.5);border-radius:4px;font-size:8px;display:flex;align-items:center;justify-content:center;}
 
@@ -515,6 +523,9 @@ body.shake{animation:shake 0.45s ease-in-out;}
 <script>
 let PATH_COORDS = [];
 let TOTAL = 0;
+const ROW_OFFSET = 1; // shifts every path tile down one grid row, freeing row 1 for the end marker
+const START_TILE_IMG = './volcano-start.svg';
+const END_TILE_IMG = './rainbow-bridge-end.svg';
 
 function generatePath(n) {
   const COLS = 5;
@@ -836,7 +847,8 @@ function renderGrid(){
   const g = document.getElementById('grid');
   g.innerHTML = '';
   const numRows = PATH_COORDS.length > 0 ? Math.max(...PATH_COORDS.map(p => p.gr)) : 1;
-  g.style.gridTemplateRows = `repeat(${numRows},1fr)`;
+  const totalRows = numRows + 2; // +1 row above for the end marker, +1 row below for the start marker
+  g.style.gridTemplateRows = `repeat(${totalRows},1fr)`;
   const posMap = {};
   PATH_COORDS.forEach((p,i) => { posMap[`${p.gr},${p.gc}`] = i; });
 
@@ -848,7 +860,7 @@ function renderGrid(){
 
       if(pathIdx === undefined){
         el.className = 'path-cell empty';
-        el.style.gridRow = row;
+        el.style.gridRow = row + ROW_OFFSET;
         el.style.gridColumn = col;
         g.appendChild(el);
         continue;
@@ -865,7 +877,7 @@ function renderGrid(){
       const isWall = G.wall === pathIdx;
 
       el.className = 'card';
-      el.style.gridRow = row;
+      el.style.gridRow = row + ROW_OFFSET;
       el.style.gridColumn = col;
       if(G.review || isFlipped || isMatched) el.classList.add('flipped');
       if(isMatched) el.classList.add('matched');
@@ -887,6 +899,43 @@ function renderGrid(){
       else if(!isGlitterPending && !isMatched && !isBoss && !isWarrior && !isRock && !isWall) el.addEventListener('click',()=>onCard(pathIdx));
 
       g.appendChild(el);
+    }
+  }
+
+  // End marker (rainbow bridge, row 1 — right before the castle) and start marker
+  // (volcano, bottom row — where Smashy starts). Purely decorative: never flippable.
+  if(PATH_COORDS.length > 0){
+    const startCol = PATH_COORDS[0].gc;
+    const endCol = PATH_COORDS[TOTAL-1].gc;
+    for(let col=1; col<=5; col++){
+      if(col === endCol){
+        const end = document.createElement('div');
+        end.className = 'special-tile special-end';
+        end.style.gridRow = 1;
+        end.style.gridColumn = col;
+        end.innerHTML = `<img src="${END_TILE_IMG}" alt="Rainbow bridge to the castle">`;
+        g.appendChild(end);
+      } else {
+        const sp = document.createElement('div');
+        sp.className = 'path-cell empty';
+        sp.style.gridRow = 1;
+        sp.style.gridColumn = col;
+        g.appendChild(sp);
+      }
+      if(col === startCol){
+        const start = document.createElement('div');
+        start.className = 'special-tile special-start';
+        start.style.gridRow = totalRows;
+        start.style.gridColumn = col;
+        start.innerHTML = `<img src="${START_TILE_IMG}" alt="Smashy's volcano lair">`;
+        g.appendChild(start);
+      } else {
+        const sp = document.createElement('div');
+        sp.className = 'path-cell empty';
+        sp.style.gridRow = totalRows;
+        sp.style.gridColumn = col;
+        g.appendChild(sp);
+      }
     }
   }
   document.getElementById('pBadge').textContent = `${G.matched.size} / ${TOTAL} matched`;
@@ -1295,7 +1344,7 @@ function cardEl(pathIdx){
   for(const c of cells){
     const gr=c.style.getPropertyValue('grid-row')||c.style.gridRow||'';
     const gc=c.style.getPropertyValue('grid-column')||c.style.gridColumn||'';
-    if(gr===String(p.gr)&&gc===String(p.gc)) return c;
+    if(gr===String(p.gr+ROW_OFFSET)&&gc===String(p.gc)) return c;
   }
   return null;
 }
