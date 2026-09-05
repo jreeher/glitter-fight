@@ -101,7 +101,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(180deg,#8ec5e6 0
 .castle-name{font-family:'Fredoka One',cursive;font-size:0.85rem;color:var(--gold);letter-spacing:1px;}
 
 /* Start / End path markers — decorative, never flippable */
-.special-tile{aspect-ratio:1;border-radius:9px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:default;}
+.special-tile{aspect-ratio:1;border-radius:9px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:default;position:relative;}
 .special-tile img{width:88%;height:88%;object-fit:contain;}
 .special-start{background:linear-gradient(135deg,#2a1010,#3a1818);border:2px solid rgba(255,90,40,0.55);box-shadow:0 0 12px rgba(255,60,20,0.35);}
 .special-end{background:linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.3));border:2px solid rgba(245,200,66,0.6);box-shadow:0 0 12px rgba(245,200,66,0.4);}
@@ -795,7 +795,7 @@ function initGame(counts, bossHp, mode='medium'){
     cards: deck,
     flipped: [],
     matched: new Set(),
-    bossPos: 0,
+    bossPos: -1, // -1 = still in the volcano, hasn't stepped onto the path yet
     warriors: new Set(),
     glitterHoleMode: false,
     glitterPendingTiles: [],
@@ -927,7 +927,9 @@ function renderGrid(){
         start.className = 'special-tile special-start';
         start.style.gridRow = totalRows;
         start.style.gridColumn = col;
-        start.innerHTML = `<img src="${START_TILE_IMG}" alt="Smashy's volcano lair">`;
+        const bossAtStart = !G.review && G.bossPos === -1;
+        const hpPct = Math.max(0, G.hp/G.maxHp*100);
+        start.innerHTML = `<img src="${START_TILE_IMG}" alt="Smashy's volcano lair">${bossAtStart?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}`;
         g.appendChild(start);
       } else {
         const sp = document.createElement('div');
@@ -1139,7 +1141,7 @@ function damageBoss(amt,msg){
 
 function pushBackN(n){
   const before=G.bossPos;
-  let target=Math.max(0,G.bossPos-n);
+  let target=Math.max(-1,G.bossPos-n);
   if(G.wall!==null && target<=G.wall){ target=Math.min(before, G.wall+1); }
   G.bossPos=target;
 }
