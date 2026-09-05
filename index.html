@@ -297,8 +297,8 @@ body.shake{animation:shake 0.45s ease-in-out;}
 .btn-start{width:100%;padding:12px;font-family:'Fredoka One',cursive;font-size:1.1rem;letter-spacing:1px;background:linear-gradient(135deg,var(--gold),#ff8c42);color:#1a1200;border:none;border-radius:99px;cursor:pointer;transition:transform 0.12s;}
 .btn-start:hover{transform:translateY(-2px) scale(1.02);}
 .btn-start:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
-.btn-tutorial{width:100%;padding:10px;font-family:'Fredoka One',cursive;font-size:0.95rem;letter-spacing:1px;background:#f5c842;color:#5a3800;border:1px solid rgba(180,140,10,0.6);border-radius:99px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:8px;}
-.btn-tutorial:hover{background:#f7d060;color:#3a2800;transform:translateY(-1px);}
+.btn-tutorial{width:100%;padding:10px;font-family:'Fredoka One',cursive;font-size:0.95rem;letter-spacing:1px;background:#c47a82;color:#fff;border:1px solid rgba(160,80,90,0.6);border-radius:99px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:8px;}
+.btn-tutorial:hover{background:#d48e96;color:#fff;transform:translateY(-1px);}
 /* Tutorial overlay */
 .tutorial-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 .tutorial-overlay.off{display:none;}
@@ -365,7 +365,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 <div class="setup-overlay" id="setupOverlay">
   <div class="setup-clouds" id="setupClouds"></div>
   <div class="setup-card">
-    <img src="./Glitter Fight Banner.png" alt="Glitter Fight" style="width:100%;height:auto;display:block;margin:0 auto 16px;border-radius:14px;">
+    <img src="./Glitter Fight Banner.webp" alt="Glitter Fight" style="width:100%;height:auto;display:block;margin:0 auto 16px;border-radius:14px;">
     <button class="btn-tutorial" onclick="showTutorial()" style="margin-bottom:20px;">Tutorial</button>
     <div class="setup-mode-box" id="modeBox" style="margin-bottom:14px;">
       <div class="setup-mode-label"><strong>Difficulty</strong></div>
@@ -480,7 +480,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 
 <div class="app">
   <div class="header">
-    <img src="./Glitter Fight Banner.png" style="width:100%;border-radius:14px;display:block;">
+    <img src="./Glitter Fight Banner.webp" style="width:100%;border-radius:14px;display:block;">
   </div>
 
   <div class="main">
@@ -892,7 +892,7 @@ function renderGrid(){
 
       const faceContent = card.img ? `<img src="${card.img}" style="width:75%;height:75%;object-fit:contain;" onerror="this.style.display='none'">` : card.emoji;
       const hpPct = Math.max(0, G.hp/G.maxHp*100);
-      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock.png" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
+      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock-3.webp" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
 
       if(isGlitterPending && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
       if(G.warriorMode && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
