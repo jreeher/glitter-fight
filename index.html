@@ -1202,29 +1202,17 @@ function execMove(ri){
   }
 
   if(d.rock){
-    // Find the next unflipped, unmatched, unrocked tile ahead of Smashy
+    // Always drop on the first unmatched tile ahead of Smashy (stacking allowed)
     let rockTarget = null;
     for(let i = G.bossPos + 1; i < TOTAL; i++){
-      if(!G.matched.has(i) && !G.flipped.includes(i) && !G.rocks.includes(i)){
-        rockTarget = i; break;
-      }
+      if(!G.matched.has(i)){ rockTarget = i; break; }
     }
     if(rockTarget === null){
-      if(G.rocks.length > 0){
-        G.rocks.shift();
-        showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;">','Rock Off the Map!','Oldest rock removed permanently!');
-      } else {
-        showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;">','Smashy Grumbles...','No tiles to block!');
-      }
+      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Smashy Grumbles...','No tiles to block!');
       render(); return;
     }
-    if(G.rocks.length>=2){
-      G.rocks.shift(); G.rocks.push(rockTarget);
-      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;">','Rock Moved!','Oldest rock relocated!');
-    } else {
-      G.rocks.push(rockTarget);
-      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;">','Rock Dropped!','A tile ahead is blocked!');
-    }
+    G.rocks.push(rockTarget);
+    showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Rock Dropped!','A tile ahead is blocked!');
     render(); return;
   }
 
