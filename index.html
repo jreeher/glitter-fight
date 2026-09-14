@@ -275,6 +275,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 .mode-btn.active-easy{background:rgba(80,210,100,0.15);border-color:rgba(80,210,100,0.45);color:#72e28a;}
 .mode-btn.active-medium{background:rgba(80,160,255,0.15);border-color:rgba(80,160,255,0.45);color:#80b4ff;}
 .mode-btn.active-hard{background:rgba(255,80,80,0.15);border-color:rgba(255,80,80,0.45);color:var(--red);}
+.mode-btn.active-ultrasmash{background:rgba(153,0,204,0.2);border-color:rgba(153,0,204,0.55);color:#dd44ff;}
 .setup-card .setup-title{color:#1a3a5a;}
 .setup-card .setup-sub{color:#1a3a5a;}
 .setup-card .setup-tile-card{background:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.55);}
@@ -294,6 +295,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 .setup-card .mode-btn.active-easy{background:rgba(80,210,100,0.2);border-color:rgba(80,210,100,0.5);color:#1a6a1a;}
 .setup-card .mode-btn.active-medium{background:rgba(80,160,255,0.2);border-color:rgba(80,160,255,0.5);color:#1a3a8a;}
 .setup-card .mode-btn.active-hard{background:rgba(255,80,80,0.2);border-color:rgba(255,80,80,0.5);color:#8a1f1f;}
+.setup-card .mode-btn.active-ultrasmash{background:rgba(153,0,204,0.2);border-color:rgba(153,0,204,0.5);color:#9900cc;}
 .btn-start{width:100%;padding:12px;font-family:'Fredoka One',cursive;font-size:1.1rem;letter-spacing:1px;background:linear-gradient(135deg,var(--gold),#ff8c42);color:#1a1200;border:none;border-radius:99px;cursor:pointer;transition:transform 0.12s;}
 .btn-start:hover{transform:translateY(-2px) scale(1.02);}
 .btn-start:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
@@ -369,10 +371,11 @@ body.shake{animation:shake 0.45s ease-in-out;}
     <button class="btn-tutorial" onclick="showTutorial()" style="margin-bottom:20px;">Tutorial</button>
     <div class="setup-mode-box" id="modeBox" style="margin-bottom:14px;">
       <div class="setup-mode-label"><strong>Difficulty</strong></div>
-      <div class="setup-mode-btns">
+      <div class="setup-mode-btns" style="flex-wrap:wrap;justify-content:center;">
         <button class="mode-btn" id="modeEasy" onclick="setMode('easy')" style="display:flex;align-items:center;gap:5px;"><img src="./feather-arrow.webp" style="width:18px;height:18px;object-fit:contain;">Easy</button>
         <button class="mode-btn active-medium" id="modeMedium" onclick="setMode('medium')" style="display:flex;align-items:center;gap:5px;"><img src="./cloud-cannon-2.webp" style="width:18px;height:18px;object-fit:contain;">Medium</button>
         <button class="mode-btn" id="modeHard" onclick="setMode('hard')" style="display:flex;align-items:center;gap:5px;"><img src="./rain-bow.webp" style="width:18px;height:18px;object-fit:contain;">Hard</button>
+        <button class="mode-btn" id="modeUltra" onclick="setMode('ultrasmash')" style="display:flex;align-items:center;gap:5px;"><img src="./smashy.webp" style="width:18px;height:18px;object-fit:contain;">Ultra</button>
       </div>
     </div>
     <div class="setup-hp-row" style="margin-bottom:20px;">
@@ -608,11 +611,11 @@ let setupCounts = {};
 
 function tileMax(t) {
   if (t.singleton) return t.max !== undefined ? t.max : 1;
-  return gameMode === 'hard' ? 1 : (t.max !== undefined ? t.max : Infinity);
+  return (gameMode === 'hard' || gameMode === 'ultrasmash') ? 1 : (t.max !== undefined ? t.max : Infinity);
 }
 
 function tileDefault(t, mode) {
-  if (mode === 'hard' && t.hardDefaultPairs !== undefined) return t.hardDefaultPairs;
+  if ((mode === 'hard' || mode === 'ultrasmash') && t.hardDefaultPairs !== undefined) return t.hardDefaultPairs;
   if (mode === 'easy' && t.easyDefaultPairs !== undefined) return t.easyDefaultPairs;
   return t.defaultPairs;
 }
@@ -646,9 +649,10 @@ let userChangedHp = false;
 
 function setMode(mode) {
   gameMode = mode;
-  document.getElementById('modeEasy').className   = 'mode-btn' + (mode==='easy'   ? ' active-easy'   : '');
-  document.getElementById('modeMedium').className = 'mode-btn' + (mode==='medium' ? ' active-medium' : '');
-  document.getElementById('modeHard').className   = 'mode-btn' + (mode==='hard'   ? ' active-hard'   : '');
+  document.getElementById('modeEasy').className   = 'mode-btn' + (mode==='easy'        ? ' active-easy'       : '');
+  document.getElementById('modeMedium').className = 'mode-btn' + (mode==='medium'      ? ' active-medium'     : '');
+  document.getElementById('modeHard').className   = 'mode-btn' + (mode==='hard'        ? ' active-hard'       : '');
+  document.getElementById('modeUltra').className  = 'mode-btn' + (mode==='ultrasmash'  ? ' active-ultrasmash' : '');
   TILE_CONFIG.forEach(t => {
     if (t.hidden) return;
     setupCounts[t.id] = Math.min(tileDefault(t, mode), tileMax(t));
@@ -747,15 +751,12 @@ function updateSetupStats() {
   const slider = document.getElementById('hpSlider');
   const effectiveMax = Math.max(1, maxDmg);
   slider.max = effectiveMax;
-  if (gameMode === 'hard') {
+  slider.disabled = false;
+  slider.style.opacity = '';
+  if (!userChangedHp) {
+    slider.value = Math.min(gameMode === 'ultrasmash' ? 15 : 12, effectiveMax);
+  } else if (parseInt(slider.value) > effectiveMax) {
     slider.value = effectiveMax;
-    slider.disabled = true;
-    slider.style.opacity = '0.5';
-  } else {
-    slider.disabled = false;
-    slider.style.opacity = '';
-    if (!userChangedHp) slider.value = Math.max(1, effectiveMax - 3);
-    else if (parseInt(slider.value) > effectiveMax) slider.value = effectiveMax;
   }
   document.getElementById('hpSliderVal').textContent = slider.value;
   document.getElementById('btnStart').disabled = totalTiles < 4;
@@ -1167,7 +1168,7 @@ function doBoss(){
 
 // ── MOVEMENT ─────────────────────────────────────────────────────────────────
 function execMove(ri){
-  const d=(G.mode==='easy'?DICE_DEF_EASY:G.mode==='hard'?DICE_DEF_HARD:DICE_DEF)[ri];
+  const d=(G.mode==='easy'?DICE_DEF_EASY:(G.mode==='hard'||G.mode==='ultrasmash')?DICE_DEF_HARD:DICE_DEF)[ri];
 
   if(d.swapAdj){
     const matchedCount = G.matched.size;
