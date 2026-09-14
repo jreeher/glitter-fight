@@ -598,7 +598,7 @@ const TILE_CONFIG = [
   { id:'comet',     name:'Cloudy',         img:'./wind-blast.webp',       fc:'face-comet',     damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'1 damage + pushes Smashy back 1 space' },
   { id:'unicorn',   name:'Unicorn Horn',   img:'./unicorn-horn.webp',     fc:'face-unicorn',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:2, desc:'1 damage + pushes Smashy back 2 spaces' },
   { id:'tornado',   name:'Rainbow Tornado',img:'./rainbow-tornado.webp',  fc:'face-tornado',   damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Pushes Smashy back 3 spaces' },
-  { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + place between any two tiles to stop Smashy' },
+  { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + 2 shields + shield a tile face-up' },
   { id:'shield',    name:'Wall of Fluff',  img:'./cloud-wall.webp',       fc:'face-shield',    damage:0, defaultPairs:1, max:2, desc:'Blocks one castle breach' },
   { id:'starmap',   name:'Sparkle Wand',   img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at 4 face-down tiles' },
   { id:'glitter',   name:'Glitter Hole',   img:'./glitter-hole.webp',     fc:'face-glitter',   damage:2, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Removes all rocks + 2 damage' },
@@ -623,14 +623,14 @@ const DICE_DEF = [
   { lbl:'Triple step — moves three!',  step3:true   },
   { lbl:'ROCK! Current tile blocked!', rock:true    },
   { lbl:'ROCK! Current tile blocked!', rock:true    },
-  { lbl:'EARTHQUAKE — tiles shift to castle!',swapAdj:true },
+  { lbl:'Thunder — tiles shift to castle!',swapAdj:true },
 ];
 const DICE_DEF_HARD = [
   { lbl:'Charge ahead!',               step:true    },
   { lbl:'Double step — moves twice!',  step2:true   },
   { lbl:'Triple step — moves three!',  step3:true   },
   { lbl:'QUAD step — moves four!',     step4:true   },
-  { lbl:'EARTHQUAKE — tiles shift to castle!',swapAdj:true },
+  { lbl:'Thunder — tiles shift to castle!',swapAdj:true },
   { lbl:'ROCK! Current tile blocked!', rock:true    },
 ];
 const DICE_DEF_EASY = [
@@ -1092,7 +1092,7 @@ function onCard(pathIdx){
         setTimeout(()=>{ G.lastMatched=[]; },600);
         checkMilestone();
         if(checkWin()) return;
-        if(!G.warriorMode) setTimeout(()=>bossTurn(), G.powerDelay);
+        setTimeout(()=>bossTurn(), G.powerDelay);
         G.powerDelay=480;
       },400);
     } else {
@@ -1172,7 +1172,7 @@ function execMove(ri){
   if(d.swapAdj){
     const matchedCount = G.matched.size;
     if(matchedCount === 0){
-      showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Earthquake!','No gaps to fill!');
+      showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Thunder!','No gaps to fill!');
       render(); return;
     }
     // Collect non-matched cards in order, tracking key positions
@@ -1199,7 +1199,7 @@ function execMove(ri){
     G.rocks=newRocks;
     if(bossRelIdx>=0) G.bossPos=matchedCount+bossRelIdx;
     if(G.wall!==null&&wallRelIdx>=0) G.wall=matchedCount+wallRelIdx;
-    showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Earthquake!','Tiles shift towards the castle!');
+    showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Thunder!','Tiles shift towards the castle!');
     render(); return;
   }
 
@@ -1210,7 +1210,11 @@ function execMove(ri){
       if(!G.matched.has(i)){ rockTarget = i; break; }
     }
     if(rockTarget === null){
-      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Smashy Grumbles...','No tiles to block!');
+      if(G.bossPos >= TOTAL-1){
+        showBossPopup('<img src="./rainbow-bridge.webp" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Rainbow Gate!','Rock captured by the castle!');
+      } else {
+        showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Smashy Grumbles...','No tiles to block!');
+      }
       render(); return;
     }
     G.rocks.push(rockTarget);
