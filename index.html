@@ -1212,11 +1212,7 @@ function execMove(ri){
   }
 
   if(d.rock){
-    if(G.rocks.length >= 2){
-      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Smashy Grumbles...','Already 2 rocks on the path!');
-      render(); return;
-    }
-    // Always drop on the first unmatched tile ahead of Smashy (stacking allowed)
+    // Drop on the first unmatched tile ahead of Smashy
     let rockTarget = null;
     for(let i = G.bossPos + 1; i < TOTAL; i++){
       if(!G.matched.has(i)){ rockTarget = i; break; }
@@ -1228,6 +1224,9 @@ function execMove(ri){
         showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Smashy Grumbles...','No tiles to block!');
       }
       render(); return;
+    }
+    if(G.rocks.length >= 2){
+      G.rocks.shift(); // remove oldest rock to make room
     }
     G.rocks.push(rockTarget);
     showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Rock Dropped!','A tile ahead is blocked!');
