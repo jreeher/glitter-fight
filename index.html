@@ -15,7 +15,7 @@
 <link rel="preload" href="./banner.webp" as="image">
 <link rel="preload" href="./rock.png" as="image">
 <link rel="preload" href="./Step 1.png" as="image">
-<link rel="preload" href="./Cloud Swap.png" as="image">
+<link rel="preload" href="./thunder.webp" as="image">
 <link rel="preload" href="./feather-arrow.webp" as="image">
 <link rel="preload" href="./rainbow-guardian.webp" as="image">
 <link rel="preload" href="./cloud-wall.webp" as="image">
@@ -452,7 +452,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
           <div class="tut-row"><span class="tut-icon"><img src="./Step 1.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Charge 1–4 steps</strong> toward your castle along the path. The further he gets, the more urgent things become!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./rock.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on a tile ahead, blocking it. Match a <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole pair and click either tile to clear all rocks instantly.</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./smashy-wall.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Place a Wall</strong> on the tile behind him — pushback abilities can't move Smashy past it!</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./Cloud Swap.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Earthquake!</strong> All tiles condense towards the castle, filling gaps left by matched tiles. Watch out!</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./thunder.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Earthquake!</strong> All tiles condense towards the castle, filling gaps left by matched tiles. Watch out!</span></div>
         </div>
         <p class="tut-text">If Smashy is <strong style="color:#b3ecff">Frozen</strong> <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;">, he skips his turn. If a <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> is on his next tile, he stops before entering.</p>
       </div>
@@ -1170,7 +1170,7 @@ function execMove(ri){
   if(d.swapAdj){
     const matchedCount = G.matched.size;
     if(matchedCount === 0){
-      showBossPopup('<img src="./Cloud Swap.png" style="width:72px;height:72px;object-fit:contain;">','Earthquake!','No gaps to fill!');
+      showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Earthquake!','No gaps to fill!');
       render(); return;
     }
     // Collect non-matched cards in order, tracking key positions
@@ -1197,7 +1197,7 @@ function execMove(ri){
     G.rocks=newRocks;
     if(bossRelIdx>=0) G.bossPos=matchedCount+bossRelIdx;
     if(G.wall!==null&&wallRelIdx>=0) G.wall=matchedCount+wallRelIdx;
-    showBossPopup('<img src="./Cloud Swap.png" style="width:72px;height:72px;object-fit:contain;">','Earthquake!','Tiles shift towards the castle!');
+    showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Earthquake!','Tiles shift towards the castle!');
     render(); return;
   }
 
