@@ -797,6 +797,8 @@ function initGame(counts, bossHp, mode='medium'){
     matched: new Set(),
     bossPos: -1, // -1 = still in the volcano, hasn't stepped onto the path yet
     warriors: new Set(),
+    shieldMode: false,
+    shieldedTiles: new Set(),
     glitterHoleMode: false,
     glitterPendingTiles: [],
     rocks: [],
@@ -872,6 +874,7 @@ function renderGrid(){
       const isMatched = G.matched.has(pathIdx);
       const isFlipped = G.flipped.includes(pathIdx);
       const isWarrior = G.warriors.has(pathIdx);
+      const isShielded = G.shieldedTiles.has(pathIdx);
       const isGlitterPending = G.glitterHoleMode && G.glitterPendingTiles.includes(pathIdx);
       const isRock = G.rocks.includes(pathIdx);
       const isWall = G.wall === pathIdx;
@@ -879,7 +882,7 @@ function renderGrid(){
       el.className = 'card';
       el.style.gridRow = row + ROW_OFFSET;
       el.style.gridColumn = col;
-      if(G.review || isFlipped || isMatched) el.classList.add('flipped');
+      if(G.review || isFlipped || isMatched || isShielded) el.classList.add('flipped');
       if(isMatched) el.classList.add('matched');
       if(G.review && isMatched) el.classList.add('review-matched');
       if(!G.review && G.lastMatched.includes(pathIdx)) el.classList.add('just-matched');
@@ -888,11 +891,11 @@ function renderGrid(){
       if(!G.review && isGlitterPending && !isBoss) el.classList.add('glitter-hole-target');
       if(!G.review && isRock && !isBoss) el.classList.add('rock-cell');
       if(!G.review && isWall && !isBoss) el.classList.add('wall-cell');
-      if(!G.review && G.warriorMode && isMatched && !isBoss) el.classList.add('warrior-target');
+      if(!G.review && G.shieldMode && !isMatched && !isShielded && !isBoss) el.classList.add('glitter-hole-target');
 
       const faceContent = card.img ? `<img src="${card.img}" style="width:75%;height:75%;object-fit:contain;" onerror="this.style.display='none'">` : card.emoji;
       const hpPct = Math.max(0, G.hp/G.maxHp*100);
-      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock-3.webp" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
+      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isShielded&&!G.review?'<div class="rock-overlay" style="z-index:5;"><img src="./shield.webp" style="width:70%;height:70%;object-fit:contain;"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock-3.webp" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
 
       if(isGlitterPending && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
       if(G.warriorMode && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
@@ -968,9 +971,9 @@ function renderStatus(){
   if(!banner) return;
   const popup = document.getElementById('powerPopup');
   if(popup.classList.contains('action-mode')){ banner.className='context-banner'; banner.innerHTML=''; return; }
-  if(G.warriorMode){
+  if(G.shieldMode){
     banner.className = 'context-banner warrior';
-    banner.innerHTML = `<img src="./rainbow-guardian.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Glitter Guard</div><div class="cb-sub">Click a matched tile to place your guardian</div>`;
+    banner.innerHTML = `<img src="./shield.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Glitter Guard</div><div class="cb-sub">Click any tile to keep it face-up</div>`;
   } else if(G.peek){
     const left = G.peekTarget - G.peekN;
     banner.className = 'context-banner peek';
@@ -997,13 +1000,11 @@ function setDice(ri){
 function onCard(pathIdx){
   if(G.phase==='over') return;
 
-  // WARRIOR PLACEMENT
-  if(G.warriorMode){
-    if(!G.matched.has(pathIdx) || pathIdx===G.bossPos || G.rocks.includes(pathIdx)){
-      return;
-    }
-    G.warriors.add(pathIdx);
-    G.warriorMode = false;
+  // SHIELD TILE PLACEMENT
+  if(G.shieldMode){
+    if(G.matched.has(pathIdx) || G.shieldedTiles.has(pathIdx) || pathIdx===G.bossPos) return;
+    G.shieldedTiles.add(pathIdx);
+    G.shieldMode = false;
     clearPopupActionMode();
     render();
     setTimeout(()=>bossTurn(), 480);
@@ -1065,7 +1066,7 @@ function onCard(pathIdx){
   if(G.cards[pathIdx].singleton){
     G.canFlip=false; G.canFlipLockedAt=Date.now();
     setTimeout(()=>{
-      G.matched.add(pathIdx); G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
+      G.matched.add(pathIdx); G.shieldedTiles.delete(pathIdx); G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
       applyPower(G.cards[pathIdx].id); render();
       if(checkWin()) return;
       setTimeout(()=>bossTurn(), G.powerDelay);
@@ -1084,6 +1085,7 @@ function onCard(pathIdx){
     if(isMatch){
       setTimeout(()=>{
         G.matched.add(a); G.matched.add(b); G.pairs++;
+        G.shieldedTiles.delete(a); G.shieldedTiles.delete(b);
         G.lastMatched=[a,b];
         G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
         applyPower(powerId); render();
@@ -1116,7 +1118,7 @@ function applyPower(id){
   G.powerDelay=480;
   const pi = (src,s=72) => `<img src="${src}" style="width:${s}px;height:${s}px;object-fit:contain;">`;
   if(id==='lightning')   { damageBoss(1,''); showPopup(pi('./feather-arrow.webp'),'Feather Arrow!','-1 HP to Smashy','#8bc34a'); }
-  else if(id==='warrior'){ damageBoss(1,''); G.warriorMode=true; showActionPopup(pi('./rainbow-guardian.webp'),'Glitter Guard!','Click a matched tile! -1 HP','#4da6ff'); }
+  else if(id==='warrior'){ damageBoss(1,''); G.shields+=2; G.shieldMode=true; renderShields(); showActionPopup(pi('./rainbow-guardian.webp'),'Glitter Guard!','Click any tile to shield it! +2 shields','#4da6ff'); }
   else if(id==='shield') { G.shields++; renderShields(); showPopup(pi('./cloud-wall.webp'),'Wall of Fluff!','Castle protected!','#f5c842'); }
   else if(id==='starmap'){
     const avail=countPeekable();
