@@ -598,7 +598,7 @@ const TILE_CONFIG = [
   { id:'lightning', name:'Feather Arrow',  img:'./feather-arrow.webp',    fc:'face-lightning', damage:1, defaultPairs:1, max:2, desc:'Deals 1 damage to Smashy' },
   { id:'fireball',  name:'Cumulus Cannon',   img:'./cloud-cannon-2.webp',   fc:'face-fireball',  damage:2, defaultPairs:1, max:2, desc:'Deals 2 damage to Smashy' },
   { id:'rainbow',   name:'Rain-Bow',       img:'./rain-bow.webp',         fc:'face-rainbow',   damage:3, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Deals 3 damage to Smashy' },
-  { id:'comet',     name:'Cloudy',         img:'./wind-blast.webp',       fc:'face-comet',     damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'1 damage + pushes Smashy back 1 space' },
+  { id:'comet',     name:'Cloudy',         img:'./wind-blast.webp',       fc:'face-comet',     damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Pushes Smashy back 1 space' },
   { id:'unicorn',   name:'Unicorn Horn',   img:'./unicorn-horn.webp',     fc:'face-unicorn',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:2, desc:'1 damage + pushes Smashy back 2 spaces' },
   { id:'tornado',   name:'Rainbow Tornado',img:'./rainbow-tornado.webp',  fc:'face-tornado',   damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Pushes Smashy back 3 spaces' },
   { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + 2 shields + shield a tile face-up' },
@@ -1127,7 +1127,7 @@ function applyPower(id){
     else { G.peek=true; G.peekN=0; G.peekTarget=Math.min(4,avail); G.peekIdx=[]; showActionPopup(pi('./star-wand.webp'),'Sparkle Wand!',`Click ${G.peekTarget} tile${G.peekTarget!==1?'s':''} to peek!`,'#f5c842'); }
   }
   else if(id==='fireball'){ damageBoss(2,''); showPopup(pi('./cloud-cannon-2.webp'),'Cumulus Cannon!','-2 HP to Smashy!','#ff8c42'); }
-  else if(id==='comet'){ pushBackN(1); damageBoss(1,''); showPopup(pi('./wind-blast.webp'),'Cloudy!','Smashy pushed back 1! -1 HP','#c8a856'); G.powerDelay=1400; }
+  else if(id==='comet'){ pushBackN(1); showPopup(pi('./wind-blast.webp'),'Cloudy!','Smashy pushed back 1!','#c8a856'); G.powerDelay=1400; }
   else if(id==='unicorn'){ pushBackN(2); damageBoss(1,''); showPopup(pi('./unicorn-horn.webp'),'Unicorn Horn!','Smashy pushed back 2! -1 HP','#f4b8ff'); G.powerDelay=1400; }
   else if(id==='glitter'){ G.rocks=[]; damageBoss(2,''); showPopup(pi('./glitter-hole.webp'),'Glitter Hole!','All rocks cleared! -2 HP to Smashy','#ffe4f7'); }
   else if(id==='tornado'){ pushBackN(3); showPopup(pi('./rainbow-tornado.webp'),'Rainbow Tornado!','Smashy pushed back 3!','#a0d8ff'); G.powerDelay=1400; }
@@ -1176,11 +1176,13 @@ function execMove(ri){
       showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Thunder!','No gaps to fill!');
       render(); return;
     }
-    // Collect non-matched cards in order, tracking key positions
+    // Collect non-matched cards in order, building old→new index map
     const nonMatchedCards=[], nonMatchedRocks=[];
+    const oldToNew={};
     let bossRelIdx=-1, wallRelIdx=-1;
     for(let i=0;i<TOTAL;i++){
       if(!G.matched.has(i)){
+        oldToNew[i]=matchedCount+nonMatchedCards.length;
         if(i===G.bossPos) bossRelIdx=nonMatchedCards.length;
         if(G.wall!==null&&i===G.wall) wallRelIdx=nonMatchedCards.length;
         nonMatchedRocks.push(G.rocks.includes(i));
@@ -1200,11 +1202,20 @@ function execMove(ri){
     G.rocks=newRocks;
     if(bossRelIdx>=0) G.bossPos=matchedCount+bossRelIdx;
     if(G.wall!==null&&wallRelIdx>=0) G.wall=matchedCount+wallRelIdx;
+    // Remap shielded tiles to their new positions; drop any that landed in the matched zone
+    const newShielded=new Set();
+    G.shieldedTiles.forEach(idx=>{ if(oldToNew[idx]!==undefined) newShielded.add(oldToNew[idx]); });
+    G.shieldedTiles=newShielded;
+    G.flipped=[];
     showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Thunder!','Tiles shift towards the castle!');
     render(); return;
   }
 
   if(d.rock){
+    if(G.rocks.length >= 2){
+      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Smashy Grumbles...','Already 2 rocks on the path!');
+      render(); return;
+    }
     // Always drop on the first unmatched tile ahead of Smashy (stacking allowed)
     let rockTarget = null;
     for(let i = G.bossPos + 1; i < TOTAL; i++){
