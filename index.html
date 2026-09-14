@@ -599,7 +599,7 @@ const TILE_CONFIG = [
   { id:'fireball',  name:'Cumulus Cannon',   img:'./cloud-cannon-2.webp',   fc:'face-fireball',  damage:2, defaultPairs:1, max:2, desc:'Deals 2 damage to Smashy' },
   { id:'rainbow',   name:'Rain-Bow',       img:'./rain-bow.webp',         fc:'face-rainbow',   damage:3, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Deals 3 damage to Smashy' },
   { id:'comet',     name:'Cloudy',         img:'./wind-blast.webp',       fc:'face-comet',     damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Pushes Smashy back 1 space' },
-  { id:'unicorn',   name:'Unicorn Horn',   img:'./unicorn-horn.webp',     fc:'face-unicorn',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:2, desc:'1 damage + pushes Smashy back 2 spaces' },
+  { id:'unicorn',   name:'Unicorn Horn',   img:'./unicorn-horn.webp',     fc:'face-unicorn',   damage:2, defaultPairs:1, max:2, easyDefaultPairs:2, desc:'2 damage + pushes Smashy back 2 spaces' },
   { id:'tornado',   name:'Rainbow Tornado',img:'./rainbow-tornado.webp',  fc:'face-tornado',   damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Pushes Smashy back 3 spaces' },
   { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + 2 shields + shield a tile face-up' },
   { id:'shield',    name:'Wall of Fluff',  img:'./cloud-wall.webp',       fc:'face-shield',    damage:0, defaultPairs:1, max:2, desc:'Blocks one castle breach' },
@@ -1128,7 +1128,7 @@ function applyPower(id){
   }
   else if(id==='fireball'){ damageBoss(2,''); showPopup(pi('./cloud-cannon-2.webp'),'Cumulus Cannon!','-2 HP to Smashy!','#ff8c42'); }
   else if(id==='comet'){ pushBackN(1); showPopup(pi('./wind-blast.webp'),'Cloudy!','Smashy pushed back 1!','#c8a856'); G.powerDelay=1400; }
-  else if(id==='unicorn'){ pushBackN(2); damageBoss(1,''); showPopup(pi('./unicorn-horn.webp'),'Unicorn Horn!','Smashy pushed back 2! -1 HP','#f4b8ff'); G.powerDelay=1400; }
+  else if(id==='unicorn'){ pushBackN(2); damageBoss(2,''); showPopup(pi('./unicorn-horn.webp'),'Unicorn Horn!','Smashy pushed back 2! -2 HP','#f4b8ff'); G.powerDelay=1400; }
   else if(id==='glitter'){ G.rocks=[]; damageBoss(2,''); showPopup(pi('./glitter-hole.webp'),'Glitter Hole!','All rocks cleared! -2 HP to Smashy','#ffe4f7'); }
   else if(id==='tornado'){ pushBackN(3); showPopup(pi('./rainbow-tornado.webp'),'Rainbow Tornado!','Smashy pushed back 3!','#a0d8ff'); G.powerDelay=1400; }
   else if(id==='freeze') { G.frozen=true; damageBoss(1,''); showPopup(pi('./freeze-wand.webp'),'Freeze Wand!','Smashy frozen + -1 HP!','#b3ecff'); }
