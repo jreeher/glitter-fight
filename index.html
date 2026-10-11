@@ -862,6 +862,18 @@ function render(){
   });
 }
 
+// One rock sits centered; stacked rocks are offset diagonally so you can see how many are on the tile
+function rockStackHtml(n){
+  if(n<=1) return '<div class="rock-overlay"><img src="./rock-3.webp" style="width:64%;height:64%;object-fit:contain;"></div>';
+  const offsets=[[-15,-12],[15,12],[15,-12],[-15,12]];
+  let html='';
+  for(let k=0;k<n;k++){
+    const [dx,dy]=offsets[k%offsets.length];
+    html+=`<div class="rock-overlay" style="transform:translate(${dx}%,${dy}%);z-index:${5+k};"><img src="./rock-3.webp" style="width:56%;height:56%;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));"></div>`;
+  }
+  return html;
+}
+
 function renderGrid(){
   const g = document.getElementById('grid');
   g.innerHTML = '';
@@ -917,7 +929,8 @@ function renderGrid(){
       const isWarrior = G.warriors.has(pathIdx);
       const isFrozen = G.frozenTiles.has(pathIdx);
       const isGlitterPending = G.glitterHoleMode && G.glitterPendingTiles.includes(pathIdx);
-      const isRock = G.rocks.includes(pathIdx);
+      const rockCount = G.rocks.filter(r=>r===pathIdx).length;
+      const isRock = rockCount>0;
       const isWall = G.wall === pathIdx;
 
       el.className = 'card';
@@ -938,7 +951,7 @@ function renderGrid(){
 
       const faceContent = card.img ? `<img src="${card.img}" style="width:75%;height:75%;object-fit:contain;" onerror="this.style.display='none'">` : card.emoji;
       const hpPct = Math.max(0, G.hp/G.maxHp*100);
-      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay${G.smashyReversed?' facing-back':''}" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isFrozen&&!isMatched&&!G.review?'<div class="frozen-badge"><img src="./freeze-wand.webp"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock-3.webp" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
+      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay${G.smashyReversed?' facing-back':''}" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isFrozen&&!isMatched&&!G.review?'<div class="frozen-badge"><img src="./freeze-wand.webp"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?rockStackHtml(rockCount):''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
 
       if(isGlitterPending && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
       if(G.warriorMode && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
@@ -1263,7 +1276,7 @@ function execMove(ri){
       render(); return;
     }
     // Collect non-matched cards in order, building old→new index map
-    const nonMatchedCards=[], nonMatchedRocks=[], matchedCards=[];
+    const nonMatchedCards=[], matchedCards=[];
     const oldToNew={};
     let bossRelIdx=-1, wallRelIdx=-1;
     for(let i=0;i<TOTAL;i++){
@@ -1272,7 +1285,6 @@ function execMove(ri){
         oldToNew[i]=matchedCount+nonMatchedCards.length;
         if(i===G.bossPos) bossRelIdx=nonMatchedCards.length;
         if(G.wall!==null&&i===G.wall) wallRelIdx=nonMatchedCards.length;
-        nonMatchedRocks.push(G.rocks.includes(i));
         nonMatchedCards.push(G.cards[i]);
       }
     }
@@ -1280,13 +1292,9 @@ function execMove(ri){
     G.matched=new Set();
     for(let i=0;i<matchedCount;i++){ G.matched.add(i); G.cards[i]=matchedCards[i]; }
     // Place non-matched cards at matchedCount..TOTAL-1
-    const newRocks=[];
-    for(let j=0;j<nonMatchedCards.length;j++){
-      const newIdx=matchedCount+j;
-      G.cards[newIdx]=nonMatchedCards[j];
-      if(nonMatchedRocks[j]) newRocks.push(newIdx);
-    }
-    G.rocks=newRocks;
+    for(let j=0;j<nonMatchedCards.length;j++) G.cards[matchedCount+j]=nonMatchedCards[j];
+    // Move every rock with its tile (keeps stacked rocks and drop order)
+    G.rocks=G.rocks.filter(r=>oldToNew[r]!==undefined).map(r=>oldToNew[r]);
     if(bossRelIdx>=0) G.bossPos=matchedCount+bossRelIdx;
     if(G.wall!==null&&wallRelIdx>=0) G.wall=matchedCount+wallRelIdx;
     // Remap frozen tiles to their new positions; drop any that landed in the matched zone
