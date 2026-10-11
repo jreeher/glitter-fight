@@ -1128,7 +1128,7 @@ function onCard(pathIdx){
   if(G.cards[pathIdx].singleton){
     G.canFlip=false; G.canFlipLockedAt=Date.now();
     setTimeout(()=>{
-      G.matched.add(pathIdx); G.frozenTiles.delete(pathIdx); G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
+      G.matched.add(pathIdx); G.frozenTiles.delete(pathIdx); G.flipped=[]; G.canFlip=false; G.canFlipLockedAt=null; // a match ends the turn: stay locked until Smashy has moved
       G.lastMatched=[pathIdx];
       applyPower(G.cards[pathIdx].id); render();
       setTimeout(()=>{ G.lastMatched=[]; render(); },600);
@@ -1174,7 +1174,7 @@ function onCard(pathIdx){
         G.matched.add(a); G.matched.add(b); G.pairs++;
         G.frozenTiles.delete(a); G.frozenTiles.delete(b);
         G.lastMatched=[a,b];
-        G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
+        G.flipped=[]; G.canFlip=false; G.canFlipLockedAt=null; // a match ends the turn: stay locked until Smashy has moved
         applyPower(powerId); render();
         setTimeout(()=>{ G.lastMatched=[]; render(); },600);
         checkMilestone();
@@ -1364,16 +1364,15 @@ function execMove(ri){
   // Glitter Guard turned Smashy around: this move goes backwards, then he faces forward again
   if(G.smashyReversed && steps>0){
     G.smashyReversed=false;
-    const startBack=G.bossPos;
+    let taken=0; // steps actually walked (matched tiles are skipped, so this can differ from cells crossed)
     for(let s=0;s<steps;s++){
       let prev=G.bossPos-1;
       while(prev>=0 && G.matched.has(prev)) prev--;
-      if(prev<0){ G.bossPos=-1; break; }
+      if(prev<0){ if(G.bossPos!==-1){ G.bossPos=-1; taken++; } break; }
       if(G.wall!==null && prev<=G.wall) break;
-      G.bossPos=prev;
+      G.bossPos=prev; taken++;
     }
-    const moved=startBack-G.bossPos;
-    showBossPopup(`<img src="./rainbow-guardian.webp" style="width:72px;height:72px;object-fit:contain;">`,'Backwards!', moved>0 ? `Smashy stumbles back ${moved} space${moved!==1?'s':''}!` : 'Smashy has nowhere to go back to!');
+    showBossPopup(`<img src="./rainbow-guardian.webp" style="width:72px;height:72px;object-fit:contain;">`,'Backwards!', taken>0 ? `Smashy stumbles back ${taken} step${taken!==1?'s':''}!` : 'Smashy has nowhere to go back to!');
     render();
     setTimeout(()=>checkPlayerCanMove(),500);
     return;
