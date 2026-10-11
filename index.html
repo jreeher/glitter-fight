@@ -139,6 +139,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(180deg,#8ec5e6 0
 
 .boss-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;pointer-events:none;z-index:3;animation:boss-float 1.9s ease-in-out infinite;background-size:85%;background-repeat:no-repeat;background-position:center;}
 @keyframes boss-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+.boss-overlay.facing-back{animation-name:boss-float-flip;}
+@keyframes boss-float-flip{0%,100%{transform:scaleX(-1) translateY(0);}50%{transform:scaleX(-1) translateY(-3px);}}
+.card.frozen-cell .card-face{border-color:#b3ecff!important;box-shadow:inset 0 0 12px rgba(179,236,255,0.95),0 0 10px rgba(130,220,255,0.7);}
+.frozen-badge{position:absolute;top:2px;right:2px;width:34%;height:34%;z-index:5;pointer-events:none;filter:drop-shadow(0 0 4px rgba(150,230,255,0.9));}
+.frozen-badge img{width:100%;height:100%;object-fit:contain;}
 .warrior-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;pointer-events:none;z-index:2;animation:warrior-pulse 2s ease-in-out infinite;}
 @keyframes warrior-pulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(255,150,100,0.7));}50%{transform:scale(1.15);filter:drop-shadow(0 0 12px rgba(255,200,100,1));}}
 .glitter-hole-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;animation:glitter-pulse 2s ease-in-out infinite;}
@@ -457,7 +462,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
           <div class="tut-row"><span class="tut-icon"><img src="./smashy-wall.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Place a Wall</strong> on the tile behind him — pushback abilities can't move Smashy past it!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./thunder.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Earthquake!</strong> All tiles condense towards the castle, filling gaps left by matched tiles. Watch out!</span></div>
         </div>
-        <p class="tut-text">If Smashy is <strong style="color:#b3ecff">Frozen</strong> <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;">, he skips his turn. If a <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> is on his next tile, he stops before entering.</p>
+        <p class="tut-text">A <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#b3ecff">Freeze Wand</strong> match lets you freeze 2 tiles face-up until they're matched. A <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> match turns Smashy around, so his next move goes backwards!</p>
       </div>
 
       <div class="tutorial-step" id="tutStep4">
@@ -601,11 +606,11 @@ const TILE_CONFIG = [
   { id:'comet',     name:'Cloudy',         img:'./wind-blast.webp',       fc:'face-comet',     damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Pushes Smashy back 1 space' },
   { id:'unicorn',   name:'Unicorn Horn',   img:'./unicorn-horn.webp',     fc:'face-unicorn',   damage:2, defaultPairs:1, max:2, easyDefaultPairs:2, desc:'2 damage + pushes Smashy back 2 spaces' },
   { id:'tornado',   name:'Rainbow Tornado',img:'./rainbow-tornado.webp',  fc:'face-tornado',   damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Pushes Smashy back 3 spaces' },
-  { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + 2 shields + shield a tile face-up' },
+  { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + turns Smashy around so his next move goes backwards' },
   { id:'shield',    name:'Wall of Fluff',  img:'./cloud-wall.webp',       fc:'face-shield',    damage:0, defaultPairs:1, max:2, desc:'Blocks one castle breach' },
   { id:'starmap',   name:'Sparkle Wand',   img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at 4 face-down tiles' },
   { id:'glitter',   name:'Glitter Hole',   img:'./glitter-hole.webp',     fc:'face-glitter',   damage:2, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Removes all rocks + 2 damage' },
-  { id:'freeze',    name:'Freeze Wand',    img:'./freeze-wand.webp',      fc:'face-freeze',    damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Freezes Smashy for one turn + 1 damage' },
+  { id:'freeze',    name:'Freeze Wand',    img:'./freeze-wand.webp',      fc:'face-freeze',    damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'1 damage + freeze 2 tiles face-up until they are matched' },
 ];
 let setupCounts = {};
 
@@ -798,8 +803,9 @@ function initGame(counts, bossHp, mode='medium'){
     matched: new Set(),
     bossPos: -1, // -1 = still in the volcano, hasn't stepped onto the path yet
     warriors: new Set(),
-    shieldMode: false,
-    shieldedTiles: new Set(),
+    freezeMode: false, freezeLeft: 0,
+    frozenTiles: new Set(),
+    smashyReversed: false,
     glitterHoleMode: false,
     glitterPendingTiles: [],
     rocks: [],
@@ -808,7 +814,7 @@ function initGame(counts, bossHp, mode='medium'){
     hp: bossHp,
     maxHp: bossHp,
     peek: false, peekN: 0, peekTarget: 4, peekIdx: [],
-    canFlip: true, canFlipLockedAt: null, frozen: false,
+    canFlip: true, canFlipLockedAt: null,
     phase: 'player',
     warriorMode: false,
     pairs: 0,
@@ -875,7 +881,7 @@ function renderGrid(){
       const isMatched = G.matched.has(pathIdx);
       const isFlipped = G.flipped.includes(pathIdx);
       const isWarrior = G.warriors.has(pathIdx);
-      const isShielded = G.shieldedTiles.has(pathIdx);
+      const isFrozen = G.frozenTiles.has(pathIdx);
       const isGlitterPending = G.glitterHoleMode && G.glitterPendingTiles.includes(pathIdx);
       const isRock = G.rocks.includes(pathIdx);
       const isWall = G.wall === pathIdx;
@@ -883,7 +889,8 @@ function renderGrid(){
       el.className = 'card';
       el.style.gridRow = row + ROW_OFFSET;
       el.style.gridColumn = col;
-      if(G.review || isFlipped || isMatched || isShielded) el.classList.add('flipped');
+      if(G.review || isFlipped || isMatched || isFrozen) el.classList.add('flipped');
+      if(!G.review && isFrozen && !isMatched) el.classList.add('frozen-cell');
       if(isMatched) el.classList.add('matched');
       if(G.review && isMatched) el.classList.add('review-matched');
       if(!G.review && G.lastMatched.includes(pathIdx)) el.classList.add('just-matched');
@@ -892,11 +899,11 @@ function renderGrid(){
       if(!G.review && isGlitterPending && !isBoss) el.classList.add('glitter-hole-target');
       if(!G.review && isRock && !isBoss) el.classList.add('rock-cell');
       if(!G.review && isWall && !isBoss) el.classList.add('wall-cell');
-      if(!G.review && G.shieldMode && !isMatched && !isShielded && !isBoss) el.classList.add('glitter-hole-target');
+      if(!G.review && G.freezeMode && !isMatched && !isFrozen && !isBoss && !isRock) el.classList.add('glitter-hole-target');
 
       const faceContent = card.img ? `<img src="${card.img}" style="width:75%;height:75%;object-fit:contain;" onerror="this.style.display='none'">` : card.emoji;
       const hpPct = Math.max(0, G.hp/G.maxHp*100);
-      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isShielded&&!G.review?'<div class="rock-overlay" style="z-index:5;"><img src="./shield.webp" style="width:70%;height:70%;object-fit:contain;"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock-3.webp" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
+      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay${G.smashyReversed?' facing-back':''}" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isFrozen&&!isMatched&&!G.review?'<div class="frozen-badge"><img src="./freeze-wand.webp"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?'<div class="rock-overlay"><img src="./rock-3.webp" style="width:64%;height:64%;object-fit:contain;"></div>':''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
 
       if(isGlitterPending && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
       if(G.warriorMode && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
@@ -933,7 +940,7 @@ function renderGrid(){
         start.style.gridColumn = col;
         const bossAtStart = !G.review && G.bossPos === -1;
         const hpPct = Math.max(0, G.hp/G.maxHp*100);
-        start.innerHTML = `<img src="${START_TILE_IMG}" alt="Smashy's volcano lair">${bossAtStart?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}`;
+        start.innerHTML = `<img src="${START_TILE_IMG}" alt="Smashy's volcano lair">${bossAtStart?`<div class="boss-overlay${G.smashyReversed?' facing-back':''}" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}`;
         g.appendChild(start);
       } else {
         const sp = document.createElement('div');
@@ -972,9 +979,9 @@ function renderStatus(){
   if(!banner) return;
   const popup = document.getElementById('powerPopup');
   if(popup.classList.contains('action-mode')){ banner.className='context-banner'; banner.innerHTML=''; return; }
-  if(G.shieldMode){
+  if(G.freezeMode){
     banner.className = 'context-banner warrior';
-    banner.innerHTML = `<img src="./shield.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Glitter Guard</div><div class="cb-sub">Click any tile to keep it face-up</div>`;
+    banner.innerHTML = `<img src="./freeze-wand.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Freeze Wand</div><div class="cb-sub">Click ${G.freezeLeft} more tile${G.freezeLeft!==1?'s':''} to freeze face-up</div>`;
   } else if(G.peek){
     const left = G.peekTarget - G.peekN;
     banner.className = 'context-banner peek';
@@ -1001,15 +1008,20 @@ function setDice(ri){
 function onCard(pathIdx){
   if(G.phase==='over') return;
 
-  // SHIELD TILE PLACEMENT
-  if(G.shieldMode){
-    if(G.matched.has(pathIdx) || G.shieldedTiles.has(pathIdx) || pathIdx===G.bossPos) return;
-    G.shieldedTiles.add(pathIdx);
-    G.shieldMode = false;
-    clearPopupActionMode();
+  // FREEZE WAND: pick tiles to hold face-up until they are matched
+  if(G.freezeMode){
+    if(G.matched.has(pathIdx) || G.frozenTiles.has(pathIdx) || pathIdx===G.bossPos || G.rocks.includes(pathIdx)) return;
+    G.frozenTiles.add(pathIdx);
+    G.freezeLeft--;
+    const ppSub=document.getElementById('ppSub');
+    if(G.freezeLeft<=0){
+      G.freezeMode = false;
+      clearPopupActionMode();
+    } else if(ppSub){
+      ppSub.textContent=`Click ${G.freezeLeft} more tile${G.freezeLeft!==1?'s':''} to freeze`;
+    }
     render();
-    setTimeout(()=>bossTurn(), 480);
-    return;
+    return; // bossTurn() waits for freezeMode to clear, then Smashy takes his turn
   }
 
   // GLITTER HOLE ACTIVATION (passive — can fire anytime player clicks a pending tile)
@@ -1023,7 +1035,7 @@ function onCard(pathIdx){
   }
 
   if(G.peek){
-    if(G.matched.has(pathIdx)||G.flipped.includes(pathIdx)||G.peekIdx.includes(pathIdx)) return;
+    if(G.matched.has(pathIdx)||G.flipped.includes(pathIdx)||G.peekIdx.includes(pathIdx)||G.frozenTiles.has(pathIdx)) return;
     if(G.peekN>=G.peekTarget) return;
     G.peekIdx.push(pathIdx); G.peekN++;
     const e=cardEl(pathIdx); e.classList.add('flipped','peeked');
@@ -1056,7 +1068,7 @@ function onCard(pathIdx){
   if(G.flipped.length===1 && !hasFlippable()){
     G.canFlip=false;
     setTimeout(()=>{
-      const ea=cardEl(pathIdx); if(ea) ea.classList.remove('flipped');
+      const ea=cardEl(pathIdx); if(ea && !G.frozenTiles.has(pathIdx)) ea.classList.remove('flipped');
       G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
       bossTurn();
     },600);
@@ -1067,7 +1079,7 @@ function onCard(pathIdx){
   if(G.cards[pathIdx].singleton){
     G.canFlip=false; G.canFlipLockedAt=Date.now();
     setTimeout(()=>{
-      G.matched.add(pathIdx); G.shieldedTiles.delete(pathIdx); G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
+      G.matched.add(pathIdx); G.frozenTiles.delete(pathIdx); G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
       applyPower(G.cards[pathIdx].id); render();
       if(checkWin()) return;
       setTimeout(()=>bossTurn(), G.powerDelay);
@@ -1086,7 +1098,7 @@ function onCard(pathIdx){
     if(isMatch){
       setTimeout(()=>{
         G.matched.add(a); G.matched.add(b); G.pairs++;
-        G.shieldedTiles.delete(a); G.shieldedTiles.delete(b);
+        G.frozenTiles.delete(a); G.frozenTiles.delete(b);
         G.lastMatched=[a,b];
         G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
         applyPower(powerId); render();
@@ -1099,7 +1111,7 @@ function onCard(pathIdx){
     } else {
       setTimeout(()=>{
         const ea=cardEl(a),eb=cardEl(b);
-        if(ea) ea.classList.remove('flipped'); if(eb) eb.classList.remove('flipped');
+        if(ea && !G.frozenTiles.has(a)) ea.classList.remove('flipped'); if(eb && !G.frozenTiles.has(b)) eb.classList.remove('flipped');
         G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null; renderStatus();
         bossTurn();
       },820);
@@ -1111,7 +1123,14 @@ function onCard(pathIdx){
 function countPeekable(){
   let n=0;
   for(let i=0;i<G.cards.length;i++){
-    if(!G.matched.has(i)&&!G.flipped.includes(i)&&i!==G.bossPos&&!G.warriors.has(i)&&!G.rocks.includes(i)) n++;
+    if(!G.matched.has(i)&&!G.flipped.includes(i)&&i!==G.bossPos&&!G.warriors.has(i)&&!G.rocks.includes(i)&&!G.frozenTiles.has(i)) n++;
+  }
+  return n;
+}
+function countFreezable(){
+  let n=0;
+  for(let i=0;i<G.cards.length;i++){
+    if(!G.matched.has(i)&&i!==G.bossPos&&!G.rocks.includes(i)&&!G.frozenTiles.has(i)) n++;
   }
   return n;
 }
@@ -1119,7 +1138,7 @@ function applyPower(id){
   G.powerDelay=480;
   const pi = (src,s=72) => `<img src="${src}" style="width:${s}px;height:${s}px;object-fit:contain;">`;
   if(id==='lightning')   { damageBoss(1,''); showPopup(pi('./feather-arrow.webp'),'Feather Arrow!','-1 HP to Smashy','#8bc34a'); }
-  else if(id==='warrior'){ damageBoss(1,''); G.shields+=2; G.shieldMode=true; renderShields(); showActionPopup(pi('./rainbow-guardian.webp'),'Glitter Guard!','Click any tile to shield it! +2 shields','#4da6ff'); }
+  else if(id==='warrior'){ damageBoss(1,''); G.smashyReversed=true; showPopup(pi('./rainbow-guardian.webp'),'Glitter Guard!','Smashy turns around! -1 HP','#4da6ff'); }
   else if(id==='shield') { G.shields++; renderShields(); showPopup(pi('./cloud-wall.webp'),'Wall of Fluff!','Castle protected!','#f5c842'); }
   else if(id==='starmap'){
     const avail=countPeekable();
@@ -1131,7 +1150,12 @@ function applyPower(id){
   else if(id==='unicorn'){ pushBackN(2); damageBoss(2,''); showPopup(pi('./unicorn-horn.webp'),'Unicorn Horn!','Smashy pushed back 2! -2 HP','#f4b8ff'); G.powerDelay=1400; }
   else if(id==='glitter'){ G.rocks=[]; damageBoss(2,''); showPopup(pi('./glitter-hole.webp'),'Glitter Hole!','All rocks cleared! -2 HP to Smashy','#ffe4f7'); }
   else if(id==='tornado'){ pushBackN(3); showPopup(pi('./rainbow-tornado.webp'),'Rainbow Tornado!','Smashy pushed back 3!','#a0d8ff'); G.powerDelay=1400; }
-  else if(id==='freeze') { G.frozen=true; damageBoss(1,''); showPopup(pi('./freeze-wand.webp'),'Freeze Wand!','Smashy frozen + -1 HP!','#b3ecff'); }
+  else if(id==='freeze') {
+    damageBoss(1,'');
+    const avail=countFreezable();
+    if(avail===0){ showPopup(pi('./freeze-wand.webp'),'Freeze Wand!','No tiles to freeze! -1 HP','#b3ecff'); }
+    else { G.freezeMode=true; G.freezeLeft=Math.min(2,avail); showActionPopup(pi('./freeze-wand.webp'),'Freeze Wand!',`Click ${G.freezeLeft} tile${G.freezeLeft!==1?'s':''} to freeze face-up! -1 HP`,'#b3ecff'); }
+  }
   else if(id==='rainbow'){ damageBoss(3,''); showPopup(pi('./rain-bow.webp'),'Rain-Bow!','-3 HP to Smashy!','#ffb3d9'); }
   else if(id==='queen')  { damageBoss(3,''); pushBackN(3); showPopup(pi('./kingandqueen.webp'),'Rainbow Royals!','-3 HP + pushed back 3!','#e8b4f8'); G.powerDelay=1400; }
 }
@@ -1152,8 +1176,7 @@ function pushBackN(n){
 // ── BOSS TURN ────────────────────────────────────────────────────────────────
 function bossTurn(){
   if(G.phase==='over') return;
-  if(G.frozen){ G.frozen=false; G.phase='player'; G.canFlip=true; G.canFlipLockedAt=null; renderStatus(); return; }
-  if(G.peek){ const t=setInterval(()=>{ if(!G.peek){clearInterval(t);doBoss();} },200); return; }
+  if(G.peek||G.freezeMode){ const t=setInterval(()=>{ if(!G.peek&&!G.freezeMode){clearInterval(t);doBoss();} },200); return; }
   doBoss();
 }
 
@@ -1202,10 +1225,10 @@ function execMove(ri){
     G.rocks=newRocks;
     if(bossRelIdx>=0) G.bossPos=matchedCount+bossRelIdx;
     if(G.wall!==null&&wallRelIdx>=0) G.wall=matchedCount+wallRelIdx;
-    // Remap shielded tiles to their new positions; drop any that landed in the matched zone
-    const newShielded=new Set();
-    G.shieldedTiles.forEach(idx=>{ if(oldToNew[idx]!==undefined) newShielded.add(oldToNew[idx]); });
-    G.shieldedTiles=newShielded;
+    // Remap frozen tiles to their new positions; drop any that landed in the matched zone
+    const newFrozen=new Set();
+    G.frozenTiles.forEach(idx=>{ if(oldToNew[idx]!==undefined) newFrozen.add(oldToNew[idx]); });
+    G.frozenTiles=newFrozen;
     G.flipped=[];
     showBossPopup('<img src="./thunder.webp" style="width:72px;height:72px;object-fit:contain;">','Thunder!','Tiles shift towards the castle!');
     render(); return;
@@ -1251,6 +1274,24 @@ function execMove(ri){
   }
 
   const steps = d.step?1:d.step2?2:d.step3?3:d.step4?4:0;
+
+  // Glitter Guard turned Smashy around: this move goes backwards, then he faces forward again
+  if(G.smashyReversed && steps>0){
+    G.smashyReversed=false;
+    const startBack=G.bossPos;
+    for(let s=0;s<steps;s++){
+      let prev=G.bossPos-1;
+      while(prev>=0 && G.matched.has(prev)) prev--;
+      if(prev<0){ G.bossPos=-1; break; }
+      if(G.wall!==null && prev<=G.wall) break;
+      G.bossPos=prev;
+    }
+    const moved=startBack-G.bossPos;
+    showBossPopup(`<img src="./rainbow-guardian.webp" style="width:72px;height:72px;object-fit:contain;">`,'Backwards!', moved>0 ? `Smashy stumbles back ${moved} space${moved!==1?'s':''}!` : 'Smashy has nowhere to go back to!');
+    render();
+    setTimeout(()=>checkPlayerCanMove(),500);
+    return;
+  }
   const labels = {1:'Charge!',2:'Double Step!',3:'Triple Step!',4:'QUAD Step!'};
   const subs = {1:'Smashy charges ahead!',2:'Smashy moves twice!',3:'Smashy moves three times!',4:'Smashy moves four times!'};
   const footHtml = `<img src="./Step ${steps}.png" style="width:72px;height:72px;object-fit:contain;">`;
