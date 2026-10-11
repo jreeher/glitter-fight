@@ -1139,12 +1139,26 @@ function onCard(pathIdx){
     return;
   }
 
-  // Frozen (face-up) tiles match instantly: flipping a tile's partner pairs it with the frozen tile
-  if(G.flipped.length===1){
-    const tf=G.cards[pathIdx];
+  // Frozen (face-up) tiles match instantly: flipping a tile's partner pairs it with the frozen tile,
+  // whether it is your first or second flip of the turn
+  const frozenPartnerOf=(idx)=>{
     for(const fi of G.frozenTiles){
-      if(fi===pathIdx||G.matched.has(fi)||G.rocks.includes(fi)||fi===G.bossPos) continue;
-      if(cardsMatch(tf,G.cards[fi])){ G.flipped.push(fi); break; }
+      if(fi===idx||G.matched.has(fi)||G.rocks.includes(fi)||fi===G.bossPos) continue;
+      if(cardsMatch(G.cards[idx],G.cards[fi])) return fi;
+    }
+    return -1;
+  };
+  if(G.flipped.length===1){
+    const fi=frozenPartnerOf(pathIdx);
+    if(fi>=0) G.flipped.push(fi);
+  } else if(G.flipped.length===2 && !cardsMatch(G.cards[G.flipped[0]],G.cards[G.flipped[1]])){
+    // Second flip doesn't match the first, but it does match a frozen tile: pair it with that one
+    // instead, and turn the (non-matching) first flip back down.
+    const [x,y]=G.flipped;
+    const fi=frozenPartnerOf(y);
+    if(fi>=0 && fi!==x){
+      const ex=cardEl(x); if(ex && !G.frozenTiles.has(x)) ex.classList.remove('flipped');
+      G.flipped=[y,fi];
     }
   }
 
