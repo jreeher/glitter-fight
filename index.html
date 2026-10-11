@@ -597,6 +597,16 @@ function generatePath(n) {
   return path;
 }
 
+// Where the Smashy's Mountain start marker sits: one step *before* tile 0 along the snake,
+// so it lines up with the path instead of hanging off it. Coordinates use PATH_COORDS' row scheme.
+// extraRow=true means it needs its own grid row below the path (no free cell next to tile 0).
+function startTileCoord() {
+  const p0 = PATH_COORDS[0], p1 = PATH_COORDS[1];
+  if (p0.gc > 1) return { gr: p0.gr, gc: p0.gc - 1, extraRow: false };           // bottom row runs right: tile just to the left
+  if (p1 && p1.gr < p0.gr) return { gr: p0.gr, gc: 2, extraRow: false };           // tile 0 is the left-edge connector: tile just to its right
+  return { gr: p0.gr + 1, gc: 1, extraRow: true };                                 // full row from col 1: connector-style tile below
+}
+
 const TILE_CONFIG = [
   { id:'queen',     name:'Rainbow Royals',    img:'./queen.webp',            fc:'face-queen',     damage:3, defaultPairs:1, max:1, pairWith:'king', setupImg:'./kingandqueen.webp', desc:'3 damage + pushes Smashy back 3 spaces!' },
   { id:'king',      name:'King',           img:'./king.webp',              fc:'face-king',      damage:0, defaultPairs:0, max:1, hidden:true, desc:'' },
@@ -856,7 +866,18 @@ function renderGrid(){
   const g = document.getElementById('grid');
   g.innerHTML = '';
   const numRows = PATH_COORDS.length > 0 ? Math.max(...PATH_COORDS.map(p => p.gr)) : 1;
-  const totalRows = numRows + 2; // +1 row above for the end marker, +1 row below for the start marker
+  const startCoord = PATH_COORDS.length > 0 ? startTileCoord() : null;
+  const totalRows = numRows + 1 + (startCoord && startCoord.extraRow ? 1 : 0); // +1 row above for the end marker, +1 below only if the start marker needs its own row
+  const makeStartTile = (gridRow, gridCol) => {
+    const start = document.createElement('div');
+    start.className = 'special-tile special-start';
+    start.style.gridRow = gridRow;
+    start.style.gridColumn = gridCol;
+    const bossAtStart = !G.review && G.bossPos === -1;
+    const hpPct = Math.max(0, G.hp/G.maxHp*100);
+    start.innerHTML = `<img src="${START_TILE_IMG}" alt="Smashy's volcano lair">${bossAtStart?`<div class="boss-overlay${G.smashyReversed?' facing-back':''}" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}`;
+    return start;
+  };
   g.style.gridTemplateRows = `repeat(${totalRows},1fr)`;
   const posMap = {};
   PATH_COORDS.forEach((p,i) => { posMap[`${p.gr},${p.gc}`] = i; });
@@ -868,6 +889,10 @@ function renderGrid(){
       const el = document.createElement('div');
 
       if(pathIdx === undefined){
+        if(startCoord && !startCoord.extraRow && row === startCoord.gr && col === startCoord.gc){
+          g.appendChild(makeStartTile(row + ROW_OFFSET, col));
+          continue;
+        }
         el.className = 'path-cell empty';
         el.style.gridRow = row + ROW_OFFSET;
         el.style.gridColumn = col;
@@ -913,10 +938,9 @@ function renderGrid(){
     }
   }
 
-  // End marker (rainbow bridge, row 1 — right before the castle) and start marker
-  // (volcano, bottom row — where Smashy starts). Purely decorative: never flippable.
+  // End marker (rainbow bridge, row 1 — right before the castle). The start marker (Smashy's
+  // Mountain) is placed above / in makeStartTile. Both are purely decorative: never flippable.
   if(PATH_COORDS.length > 0){
-    const startCol = PATH_COORDS[0].gc;
     const endCol = PATH_COORDS[TOTAL-1].gc;
     for(let col=1; col<=5; col++){
       if(col === endCol){
@@ -933,21 +957,19 @@ function renderGrid(){
         sp.style.gridColumn = col;
         g.appendChild(sp);
       }
-      if(col === startCol){
-        const start = document.createElement('div');
-        start.className = 'special-tile special-start';
-        start.style.gridRow = totalRows;
-        start.style.gridColumn = col;
-        const bossAtStart = !G.review && G.bossPos === -1;
-        const hpPct = Math.max(0, G.hp/G.maxHp*100);
-        start.innerHTML = `<img src="${START_TILE_IMG}" alt="Smashy's volcano lair">${bossAtStart?`<div class="boss-overlay${G.smashyReversed?' facing-back':''}" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}`;
-        g.appendChild(start);
-      } else {
-        const sp = document.createElement('div');
-        sp.className = 'path-cell empty';
-        sp.style.gridRow = totalRows;
-        sp.style.gridColumn = col;
-        g.appendChild(sp);
+    }
+    // Start marker needing its own row below the path (otherwise it already sits in the path's bottom row)
+    if(startCoord && startCoord.extraRow){
+      for(let col=1; col<=5; col++){
+        if(col === startCoord.gc){
+          g.appendChild(makeStartTile(totalRows, col));
+        } else {
+          const sp = document.createElement('div');
+          sp.className = 'path-cell empty';
+          sp.style.gridRow = totalRows;
+          sp.style.gridColumn = col;
+          g.appendChild(sp);
+        }
       }
     }
   }
