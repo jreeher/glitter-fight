@@ -80,6 +80,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(180deg,#8ec5e6 0
 }
 .path-cell{aspect-ratio:1;}
 .path-cell.empty{/* invisible spacer */}
+.path-cell.matched-slot{box-sizing:border-box;border:2px solid rgba(60,150,210,0.55);border-radius:9px;background:rgba(255,255,255,0.12);}
 
 /* Castle */
 .castle-cell{
@@ -901,7 +902,7 @@ function renderGrid(){
 
       // Matched tiles disappear from the map once their match animation ends (review mode still shows them)
       if(G.matched.has(pathIdx) && !G.review && !G.lastMatched.includes(pathIdx)){
-        el.className = 'path-cell empty';
+        el.className = 'path-cell matched-slot';
         el.style.gridRow = row + ROW_OFFSET;
         el.style.gridColumn = col;
         g.appendChild(el);
@@ -1160,6 +1161,7 @@ function countPeekable(){
   }
   return n;
 }
+let freezePopupTimer=null;
 function countFreezable(){
   let n=0;
   for(let i=0;i<G.cards.length;i++){
@@ -1187,7 +1189,17 @@ function applyPower(id){
     damageBoss(1,'');
     const avail=countFreezable();
     if(avail===0){ showPopup(pi('./freeze-wand.webp'),'Freeze Wand!','No tiles to freeze! -1 HP','#b3ecff'); }
-    else { G.freezeMode=true; G.freezeLeft=Math.min(2,avail); showActionPopup(pi('./freeze-wand.webp'),'Freeze Wand!',`Click ${G.freezeLeft} tile${G.freezeLeft!==1?'s':''} to freeze face-up! -1 HP`,'#b3ecff'); }
+    else {
+      G.freezeMode=true; G.freezeLeft=Math.min(2,avail);
+      showActionPopup(pi('./freeze-wand.webp'),'Freeze Wand!',`Click ${G.freezeLeft} tile${G.freezeLeft!==1?'s':''} to freeze face-up! -1 HP`,'#b3ecff');
+      // Popup goes away after 2s; the banner below keeps prompting for the picks
+      if(freezePopupTimer) clearTimeout(freezePopupTimer);
+      freezePopupTimer=setTimeout(()=>{
+        freezePopupTimer=null;
+        const pp=document.getElementById('powerPopup');
+        if(G.freezeMode && pp.classList.contains('action-mode')) clearPopupActionMode();
+      },2000);
+    }
   }
   else if(id==='rainbow'){ damageBoss(3,''); showPopup(pi('./rain-bow.webp'),'Rain-Bow!','-3 HP to Smashy!','#ffb3d9'); }
   else if(id==='queen')  { damageBoss(3,''); pushBackN(3); showPopup(pi('./kingandqueen.webp'),'Rainbow Royals!','-3 HP + pushed back 3!','#e8b4f8'); G.powerDelay=1400; }
