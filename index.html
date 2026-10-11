@@ -1037,6 +1037,10 @@ function setDice(ri){
 }
 
 // ── CARD CLICK ───────────────────────────────────────────────────────────────
+function cardsMatch(ta,tb){
+  const taCfg=TILE_CONFIG.find(c=>c.id===ta.id),tbCfg=TILE_CONFIG.find(c=>c.id===tb.id);
+  return ta.id===tb.id||!!(taCfg?.pairWith&&taCfg.pairWith===tb.id)||!!(tbCfg?.pairWith&&tbCfg.pairWith===ta.id);
+}
 function onCard(pathIdx){
   if(G.phase==='over') return;
 
@@ -1122,12 +1126,21 @@ function onCard(pathIdx){
     return;
   }
 
+  // Frozen (face-up) tiles match instantly: flipping a tile's partner pairs it with the frozen tile
+  if(G.flipped.length===1){
+    const tf=G.cards[pathIdx];
+    for(const fi of G.frozenTiles){
+      if(fi===pathIdx||G.matched.has(fi)||G.rocks.includes(fi)||fi===G.bossPos) continue;
+      if(cardsMatch(tf,G.cards[fi])){ G.flipped.push(fi); break; }
+    }
+  }
+
   if(G.flipped.length===2){
     G.canFlip=false; G.canFlipLockedAt=Date.now();
     const [a,b]=G.flipped;
     const ta=G.cards[a],tb=G.cards[b];
     const taCfg=TILE_CONFIG.find(c=>c.id===ta.id),tbCfg=TILE_CONFIG.find(c=>c.id===tb.id);
-    const isMatch=ta.id===tb.id||(taCfg?.pairWith&&taCfg.pairWith===tb.id)||(tbCfg?.pairWith&&tbCfg.pairWith===ta.id);
+    const isMatch=cardsMatch(ta,tb);
     const powerId=taCfg?.pairWith?ta.id:(tbCfg?.pairWith?tb.id:ta.id);
     if(isMatch){
       setTimeout(()=>{
