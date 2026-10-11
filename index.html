@@ -620,7 +620,7 @@ const TILE_CONFIG = [
   { id:'shield',    name:'Wall of Fluff',  img:'./cloud-wall.webp',       fc:'face-shield',    damage:0, defaultPairs:1, max:2, desc:'Blocks one castle breach' },
   { id:'starmap',   name:'Sparkle Wand',   img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at 4 face-down tiles' },
   { id:'glitter',   name:'Glitter Hole',   img:'./glitter-hole.webp',     fc:'face-glitter',   damage:2, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'Removes all rocks + 2 damage' },
-  { id:'freeze',    name:'Freeze Wand',    img:'./freeze-wand.webp',      fc:'face-freeze',    damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'1 damage + freeze 2 tiles face-up; matching one on your 1st flip earns a bonus flip' },
+  { id:'freeze',    name:'Freeze Wand',    img:'./freeze-wand.webp',      fc:'face-freeze',    damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'1 damage + freeze 2 tiles face-up; matching one on your 1st flip still leaves you a 2nd flip' },
 ];
 let setupCounts = {};
 
@@ -1028,9 +1028,6 @@ function renderStatus(){
   if(G.freezeMode){
     banner.className = 'context-banner warrior';
     banner.innerHTML = `<img src="./freeze-wand.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Freeze Wand</div><div class="cb-sub">Click ${G.freezeLeft} more tile${G.freezeLeft!==1?'s':''} to freeze face-up</div>`;
-  } else if(G.inBonusFlip){
-    banner.className = 'context-banner warrior';
-    banner.innerHTML = `<img src="./freeze-wand.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Bonus Flip!</div><div class="cb-sub">Flip one more tile — frozen tiles match instantly</div>`;
   } else if(G.peek){
     const left = G.peekTarget - G.peekN;
     banner.className = 'context-banner peek';
@@ -1212,15 +1209,12 @@ function onCard(pathIdx){
   }
 }
 
-// Freeze Wand bonus: matching a frozen tile on your first flip earns one more flip this turn
-// (only worth granting while another frozen tile is still waiting for its partner).
+// Freeze Wand: matching a frozen tile on your first flip still leaves you your second flip this turn,
+// no matter how many frozen tiles are left. Waits for any pick-a-tile power from the match to finish.
 function startBonusFlip(){
   if(G.phase==='over') return;
   if(G.peek||G.freezeMode){ const t=setInterval(()=>{ if(!G.peek&&!G.freezeMode){ clearInterval(t); startBonusFlip(); } },200); return; }
-  const frozenLeft=[...G.frozenTiles].some(fi=>!G.matched.has(fi)&&!G.rocks.includes(fi)&&fi!==G.bossPos);
-  if(!frozenLeft){ G.inBonusFlip=false; bossTurn(); return; }
   G.inBonusFlip=true; G.canFlip=true; G.canFlipLockedAt=null;
-  renderStatus();
 }
 
 // ── POWERS ───────────────────────────────────────────────────────────────────
