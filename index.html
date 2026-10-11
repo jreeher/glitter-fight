@@ -601,10 +601,9 @@ function generatePath(n) {
 // so it lines up with the path instead of hanging off it. Coordinates use PATH_COORDS' row scheme.
 // extraRow=true means it needs its own grid row below the path (no free cell next to tile 0).
 function startTileCoord() {
-  const p0 = PATH_COORDS[0], p1 = PATH_COORDS[1];
+  const p0 = PATH_COORDS[0];
   if (p0.gc > 1) return { gr: p0.gr, gc: p0.gc - 1, extraRow: false };           // bottom row runs right: tile just to the left
-  if (p1 && p1.gr < p0.gr) return { gr: p0.gr, gc: 2, extraRow: false };           // tile 0 is the left-edge connector: tile just to its right
-  return { gr: p0.gr + 1, gc: 1, extraRow: true };                                 // full row from col 1: connector-style tile below
+  return { gr: p0.gr + 1, gc: 1, extraRow: true };                                 // tile 0 is a left-edge connector / full row: next row down
 }
 
 const TILE_CONFIG = [
@@ -900,6 +899,15 @@ function renderGrid(){
         continue;
       }
 
+      // Matched tiles disappear from the map once their match animation ends (review mode still shows them)
+      if(G.matched.has(pathIdx) && !G.review && !G.lastMatched.includes(pathIdx)){
+        el.className = 'path-cell empty';
+        el.style.gridRow = row + ROW_OFFSET;
+        el.style.gridColumn = col;
+        g.appendChild(el);
+        continue;
+      }
+
       // It's a path tile
       const card = G.cards[pathIdx];
       const isBoss = (pathIdx === G.bossPos);
@@ -915,6 +923,7 @@ function renderGrid(){
       el.style.gridRow = row + ROW_OFFSET;
       el.style.gridColumn = col;
       if(G.review || isFlipped || isMatched || isFrozen) el.classList.add('flipped');
+      if(G.peek && G.peekIdx.includes(pathIdx)) el.classList.add('flipped','peeked');
       if(!G.review && isFrozen && !isMatched) el.classList.add('frozen-cell');
       if(isMatched) el.classList.add('matched');
       if(G.review && isMatched) el.classList.add('review-matched');
@@ -1102,7 +1111,9 @@ function onCard(pathIdx){
     G.canFlip=false; G.canFlipLockedAt=Date.now();
     setTimeout(()=>{
       G.matched.add(pathIdx); G.frozenTiles.delete(pathIdx); G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
+      G.lastMatched=[pathIdx];
       applyPower(G.cards[pathIdx].id); render();
+      setTimeout(()=>{ G.lastMatched=[]; render(); },600);
       if(checkWin()) return;
       setTimeout(()=>bossTurn(), G.powerDelay);
       G.powerDelay=480;
@@ -1124,7 +1135,7 @@ function onCard(pathIdx){
         G.lastMatched=[a,b];
         G.flipped=[]; G.canFlip=true; G.canFlipLockedAt=null;
         applyPower(powerId); render();
-        setTimeout(()=>{ G.lastMatched=[]; },600);
+        setTimeout(()=>{ G.lastMatched=[]; render(); },600);
         checkMilestone();
         if(checkWin()) return;
         setTimeout(()=>bossTurn(), G.powerDelay);
@@ -1190,7 +1201,12 @@ function damageBoss(amt,msg){
 
 function pushBackN(n){
   const before=G.bossPos;
-  let target=Math.max(-1,G.bossPos-n);
+  let target=G.bossPos;
+  for(let s=0;s<n && target>-1;s++){
+    let prev=target-1;
+    while(prev>=0 && G.matched.has(prev)) prev--; // matched tiles are gone from the map
+    target=prev<0?-1:prev;
+  }
   if(G.wall!==null && target<=G.wall){ target=Math.min(before, G.wall+1); }
   G.bossPos=target;
 }
@@ -1222,10 +1238,11 @@ function execMove(ri){
       render(); return;
     }
     // Collect non-matched cards in order, building old→new index map
-    const nonMatchedCards=[], nonMatchedRocks=[];
+    const nonMatchedCards=[], nonMatchedRocks=[], matchedCards=[];
     const oldToNew={};
     let bossRelIdx=-1, wallRelIdx=-1;
     for(let i=0;i<TOTAL;i++){
+      if(G.matched.has(i)) matchedCards.push(G.cards[i]);
       if(!G.matched.has(i)){
         oldToNew[i]=matchedCount+nonMatchedCards.length;
         if(i===G.bossPos) bossRelIdx=nonMatchedCards.length;
@@ -1236,7 +1253,7 @@ function execMove(ri){
     }
     // Rebuild matched as 0..matchedCount-1 (empty front slots)
     G.matched=new Set();
-    for(let i=0;i<matchedCount;i++) G.matched.add(i);
+    for(let i=0;i<matchedCount;i++){ G.matched.add(i); G.cards[i]=matchedCards[i]; }
     // Place non-matched cards at matchedCount..TOTAL-1
     const newRocks=[];
     for(let j=0;j<nonMatchedCards.length;j++){
