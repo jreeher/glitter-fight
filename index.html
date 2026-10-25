@@ -33,6 +33,7 @@
 <link rel="preload" href="./kingandqueen.webp" as="image">
 <link rel="preload" href="./rainbow-tornado.webp" as="image">
 <link rel="preload" href="./freeze-wand.webp" as="image">
+<link rel="preload" href="./freeze-token.webp" as="image">
 <link rel="preload" href="./rain-bow.webp" as="image">
 <style>
 :root {
@@ -145,7 +146,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(180deg,#8ec5e6 0
 .cube-badge{position:absolute;top:1px;left:1px;width:46%;height:46%;z-index:5;pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5));}
 .cube-badge img{width:100%;height:100%;object-fit:contain;}
 .card.frozen-cell .card-face{border-color:#b3ecff!important;box-shadow:inset 0 0 12px rgba(179,236,255,0.95),0 0 10px rgba(130,220,255,0.7);}
-.frozen-badge{position:absolute;top:2px;right:2px;width:34%;height:34%;z-index:5;pointer-events:none;filter:drop-shadow(0 0 4px rgba(150,230,255,0.9));}
+.frozen-badge{position:absolute;top:1px;right:1px;width:40%;height:40%;z-index:5;pointer-events:none;filter:drop-shadow(0 0 4px rgba(150,230,255,0.9));}
 .frozen-badge img{width:100%;height:100%;object-fit:contain;}
 .warrior-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;pointer-events:none;z-index:2;animation:warrior-pulse 2s ease-in-out infinite;}
 @keyframes warrior-pulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(255,150,100,0.7));}50%{transform:scale(1.15);filter:drop-shadow(0 0 12px rgba(255,200,100,1));}}
@@ -964,7 +965,7 @@ function renderGrid(){
 
       const faceContent = card.img ? `<img src="${card.img}" style="width:75%;height:75%;object-fit:contain;" onerror="this.style.display='none'">` : card.emoji;
       const hpPct = Math.max(0, G.hp/G.maxHp*100);
-      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isFrozen&&!isMatched&&!G.review?'<div class="frozen-badge"><img src="./freeze-wand.webp"></div>':''}${G.cubeTile===pathIdx&&!G.review?'<div class="cube-badge"><img src="./gelatinous-cube.webp"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?(isFrozen?rockCornerHtml(rockCount):rockStackHtml(rockCount)):''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
+      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isFrozen&&!isMatched&&!G.review?'<div class="frozen-badge"><img src="./freeze-token.webp"></div>':''}${G.cubeTile===pathIdx&&!G.review?'<div class="cube-badge"><img src="./gelatinous-cube.webp"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?(isFrozen?rockCornerHtml(rockCount):rockStackHtml(rockCount)):''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
 
       if(G.cubeMode && !isMatched && (isBoss||isRock||isWall)) el.addEventListener('click',()=>onCard(pathIdx)); // the cube can go on any tile
       if(isGlitterPending && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
@@ -1040,7 +1041,7 @@ function renderStatus(){
   if(popup.classList.contains('action-mode')){ banner.className='context-banner'; banner.innerHTML=''; return; }
   if(G.freezeMode){
     banner.className = 'context-banner warrior';
-    banner.innerHTML = `<img src="./freeze-wand.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Freeze Wand</div><div class="cb-sub">Click ${G.freezeLeft} more tile${G.freezeLeft!==1?'s':''} to freeze face-up</div>`;
+    banner.innerHTML = `<img src="./freeze-token.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Freeze Wand</div><div class="cb-sub">Click ${G.freezeLeft} more tile${G.freezeLeft!==1?'s':''} to freeze face-up</div>`;
   } else if(G.cubeMode){
     banner.className = 'context-banner warrior';
     banner.innerHTML = `<img src="./gelatinous-cube.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Gelatinous Cube</div><div class="cb-sub">Click any tile to place the cube</div>`;
