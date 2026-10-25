@@ -497,7 +497,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
   <div class="main">
     <div style="display:none" id="sbar"><span id="stxt"></span></div>
     <div class="context-banner" id="contextBanner"></div>
-    <div class="peek-banner" id="peekBanner">Star Wand active — click 4 tiles to peek!</div>
+    <div class="peek-banner" id="peekBanner">Sparkler active — click 4 tiles to peek!</div>
     <div class="grid-wrapper">
       <div class="grid-header">
         <div class="grid-label">Cloud Kingdom</div>
@@ -620,7 +620,7 @@ const TILE_CONFIG = [
   { id:'tornado',   name:'Rainbow Tornado',img:'./rainbow-tornado.webp',  fc:'face-tornado',   damage:0, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'Pushes Smashy back 3 spaces' },
   { id:'warrior',   name:'Glitter Guard',  img:'./rainbow-guardian.webp', fc:'face-warrior',   damage:1, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'1 damage + shield token in front of the castle' },
   { id:'cube',      name:'Gelatinous Cube',img:'./gelatinous-cube.webp',  fc:'face-cube',      damage:1, defaultPairs:1, max:1, desc:'1 damage + cube traps Smashy on a tile for a turn' },
-  { id:'starmap',   name:'Sparkle Wand',   img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at a face-down tile' },
+  { id:'starmap',   name:'Sparkler',       img:'./star-wand.webp',        fc:'face-starmap',   damage:0, defaultPairs:1, max:2, easyDefaultPairs:0, desc:'Peek at 4 face-down tiles' },
   { id:'glitter',   name:'Glitter Hole',   img:'./glitter-hole.webp',     fc:'face-glitter',   damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:0, desc:'1 damage + removes all rocks' },
   { id:'freeze',    name:'Freeze Wand',    img:'./freeze-wand.webp',      fc:'face-freeze',    damage:1, defaultPairs:1, max:2, hardDefaultPairs:1, easyDefaultPairs:1, desc:'1 damage + freeze 2 tiles face-up' },
 ];
@@ -1039,7 +1039,7 @@ function renderStatus(){
   } else if(G.peek){
     const left = G.peekTarget - G.peekN;
     banner.className = 'context-banner peek';
-    banner.innerHTML = `<img src="./star-wand.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Star Wand</div><div class="cb-sub">Click ${left} more tile${left!==1?'s':''} to reveal</div>`;
+    banner.innerHTML = `<img src="./star-wand.webp" class="cb-emoji" style="width:2.6rem;height:2.6rem;object-fit:contain;"><div class="cb-title">Sparkler</div><div class="cb-sub">Click ${left} more tile${left!==1?'s':''} to reveal</div>`;
   } else {
     banner.className = 'context-banner';
     banner.innerHTML = '';
@@ -1268,8 +1268,8 @@ function applyPower(id){
   }
   else if(id==='starmap'){
     const avail=countPeekable();
-    if(avail===0){ showPopup(pi('./star-wand.webp'),'Sparkle Wand!','No tiles to peek!','#f5c842'); G.powerDelay=1400; }
-    else { G.peek=true; G.peekN=0; G.peekTarget=Math.min(1,avail); G.peekIdx=[]; showActionPopup(pi('./star-wand.webp'),'Sparkle Wand!',`Click ${G.peekTarget} tile${G.peekTarget!==1?'s':''} to peek!`,'#f5c842'); }
+    if(avail===0){ showPopup(pi('./star-wand.webp'),'Sparkler!','No tiles to peek!','#f5c842'); G.powerDelay=1400; }
+    else { G.peek=true; G.peekN=0; G.peekTarget=Math.min(4,avail); G.peekIdx=[]; showActionPopup(pi('./star-wand.webp'),'Sparkler!',`Click ${G.peekTarget} tile${G.peekTarget!==1?'s':''} to peek!`,'#f5c842'); }
   }
   else if(id==='fireball'){ damageBoss(2,''); showPopup(pi('./cloud-cannon-2.webp'),'Cumulus Cannon!','-2 HP to Smashy!','#ff8c42'); }
   else if(id==='comet'){ pushBackN(1); showPopup(pi('./wind-blast.webp'),'Cloudy!','Smashy pushed back 1!','#c8a856'); G.powerDelay=1400; }
