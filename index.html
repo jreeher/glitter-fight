@@ -961,7 +961,7 @@ function renderGrid(){
       if(!G.review && isGlitterPending && !isBoss) el.classList.add('glitter-hole-target');
       if(!G.review && isRock && !isBoss) el.classList.add('rock-cell');
       if(!G.review && isWall && !isBoss) el.classList.add('wall-cell');
-      if(!G.review && G.freezeMode && !isMatched && !isFrozen && !isBoss) el.classList.add('glitter-hole-target');
+      if(!G.review && G.freezeMode && !isMatched && !isFrozen && !isBoss && !isRock) el.classList.add('glitter-hole-target');
 
       const faceContent = card.img ? `<img src="${card.img}" style="width:75%;height:75%;object-fit:contain;" onerror="this.style.display='none'">` : card.emoji;
       const hpPct = Math.max(0, G.hp/G.maxHp*100);
@@ -1077,7 +1077,7 @@ function onCard(pathIdx){
 
   // FREEZE WAND: pick tiles to hold face-up until they are matched
   if(G.freezeMode){
-    if(G.matched.has(pathIdx) || G.frozenTiles.has(pathIdx) || pathIdx===G.bossPos) return;
+    if(G.matched.has(pathIdx) || G.frozenTiles.has(pathIdx) || pathIdx===G.bossPos || G.rocks.includes(pathIdx)) return; // can't freeze a rocked tile (a rock that lands later doesn't stop a frozen tile matching)
     G.frozenTiles.add(pathIdx);
     G.freezeLeft--;
     const ppSub=document.getElementById('ppSub');
@@ -1257,7 +1257,7 @@ let freezePopupTimer=null, cubePopupTimer=null;
 function countFreezable(){
   let n=0;
   for(let i=0;i<G.cards.length;i++){
-    if(!G.matched.has(i)&&i!==G.bossPos&&!G.frozenTiles.has(i)) n++;
+    if(!G.matched.has(i)&&i!==G.bossPos&&!G.rocks.includes(i)&&!G.frozenTiles.has(i)) n++;
   }
   return n;
 }
