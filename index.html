@@ -461,7 +461,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
         <p class="tut-text">After every pair of tile flips — whether you matched or not — Smashy rolls a die and does one of these:</p>
         <div class="tut-box">
           <div class="tut-row"><span class="tut-icon"><img src="./Step 1.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Charge 1–4 steps</strong> toward your castle along the path. The further he gets, the more urgent things become!</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./rock.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on a tile ahead, blocking it. Match a <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole pair and click either tile to clear all rocks instantly.</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./rock.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on a tile ahead, blocking it (if there's no tile ahead, it lands on the Rainbow Gate). Match a <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole pair and click either tile to clear all rocks instantly.</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./smashy-wall.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Place a Wall</strong> on the tile behind him — pushback abilities can't move Smashy past it!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./thunder.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Earthquake!</strong> All tiles condense towards the castle, filling gaps left by matched tiles. Watch out!</span></div>
         </div>
@@ -822,6 +822,7 @@ function initGame(counts, bossHp, mode='medium'){
     glitterHoleMode: false,
     glitterPendingTiles: [],
     rocks: [],
+    gateRocks: 0, // rocks thrown with no tile ahead sit on the Rainbow Gate; they don't count toward the rock limit
     shields: 0,
     wall: null,
     hp: bossHp,
@@ -977,7 +978,7 @@ function renderGrid(){
         end.className = 'special-tile special-end';
         end.style.gridRow = 1;
         end.style.gridColumn = col;
-        end.innerHTML = `<img src="${END_TILE_IMG}" alt="Rainbow bridge to the castle">`;
+        end.innerHTML = `<img src="${END_TILE_IMG}" alt="Rainbow bridge to the castle">${G.gateRocks>0&&!G.review?rockStackHtml(G.gateRocks):''}`;
         g.appendChild(end);
       } else {
         const sp = document.createElement('div');
@@ -1093,7 +1094,7 @@ function onCard(pathIdx){
 
   // GLITTER HOLE ACTIVATION (passive — can fire anytime player clicks a pending tile)
   if(G.glitterHoleMode && G.glitterPendingTiles.includes(pathIdx)){
-    G.rocks=[];
+    G.rocks=[]; G.gateRocks=0;
     G.glitterHoleMode=false;
     G.glitterPendingTiles=[];
     showPopup('<img src="./glitter-hole.webp" style="width:72px;height:72px;object-fit:contain;">','Glitter Hole!','All rocks cleared!','#ffe4f7');
@@ -1274,7 +1275,7 @@ function applyPower(id){
   else if(id==='fireball'){ damageBoss(2,''); showPopup(pi('./cloud-cannon-2.webp'),'Cumulus Cannon!','-2 HP to Smashy!','#ff8c42'); }
   else if(id==='comet'){ pushBackN(1); showPopup(pi('./wind-blast.webp'),'Cloudy!','Smashy pushed back 1!','#c8a856'); G.powerDelay=1400; }
   else if(id==='unicorn'){ pushBackN(2); damageBoss(2,''); showPopup(pi('./unicorn-horn.webp'),'Unicorn Horn!','Smashy pushed back 2! -2 HP','#f4b8ff'); G.powerDelay=1400; }
-  else if(id==='glitter'){ G.rocks=[]; damageBoss(1,''); showPopup(pi('./glitter-hole.webp'),'Glitter Hole!','All rocks cleared! -1 HP to Smashy','#ffe4f7'); }
+  else if(id==='glitter'){ G.rocks=[]; G.gateRocks=0; damageBoss(1,''); showPopup(pi('./glitter-hole.webp'),'Glitter Hole!','All rocks cleared! -1 HP to Smashy','#ffe4f7'); }
   else if(id==='tornado'){ pushBackN(3); showPopup(pi('./rainbow-tornado.webp'),'Rainbow Tornado!','Smashy pushed back 3!','#a0d8ff'); G.powerDelay=1400; }
   else if(id==='freeze') {
     damageBoss(1,'');
@@ -1387,14 +1388,12 @@ function execMove(ri){
       if(!G.matched.has(i)){ rockTarget = i; break; }
     }
     if(rockTarget === null){
-      if(G.bossPos >= TOTAL-1){
-        showBossPopup('<img src="./rainbow-bridge.webp" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Rainbow Gate!','Rock captured by the castle!');
-      } else {
-        showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Smashy Grumbles...','No tiles to block!');
-      }
+      // No tile ahead to put it on: the rock lands on the Rainbow Gate (no effect on Smashy, no rock limit)
+      G.gateRocks++;
+      showBossPopup('<img src="./rock.png" style="width:72px;height:72px;object-fit:contain;border-radius:10px;">','Rock Dropped!','No tiles ahead — the rock lands on the Rainbow Gate!');
       render(); return;
     }
-    if(G.rocks.length >= 2){
+    if(G.rocks.length >= 3){
       G.rocks.shift(); // remove oldest rock to make room
     }
     G.rocks.push(rockTarget);
