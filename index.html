@@ -465,7 +465,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
           <div class="tut-row"><span class="tut-icon"><img src="./smashy-wall.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Place a Wall</strong> on the tile behind him — pushback abilities can't move Smashy past it!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./thunder.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Earthquake!</strong> All tiles condense towards the castle, filling gaps left by matched tiles. Watch out!</span></div>
         </div>
-        <p class="tut-text">A <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#b3ecff">Freeze Wand</strong> match lets you freeze 2 tiles face-up until they're matched. A <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> match puts a shield token in front of the castle, and a <img src="./gelatinous-cube.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#a8e4f0">Gelatinous Cube</strong> match traps Smashy — if he ends his turn on the cube's tile, he's stuck for a turn!</p>
+        <p class="tut-text">A <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#b3ecff">Freeze Wand</strong> match lets you freeze 2 tiles face-up until they're matched — even if a rock lands on one, it can still be matched (and the rock is removed). A <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> match puts a shield token in front of the castle, and a <img src="./gelatinous-cube.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#a8e4f0">Gelatinous Cube</strong> match traps Smashy — if he ends his turn on the cube's tile, he's stuck for a turn!</p>
       </div>
 
       <div class="tutorial-step" id="tutStep4">
@@ -878,6 +878,13 @@ function rockStackHtml(n){
   return html;
 }
 
+// Rocks on a frozen tile sit in the corner so the face-up tile stays readable
+function rockCornerHtml(n){
+  let html='<div style="position:absolute;right:1px;bottom:1px;width:52%;height:52%;z-index:6;pointer-events:none;">';
+  for(let k=0;k<Math.min(n,3);k++) html+=`<img src="./rock-3.webp" style="position:absolute;right:${k*14}%;bottom:${k*6}%;width:80%;height:80%;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));">`;
+  return html+'</div>';
+}
+
 function renderGrid(){
   const g = document.getElementById('grid');
   g.innerHTML = '';
@@ -953,16 +960,16 @@ function renderGrid(){
       if(!G.review && isGlitterPending && !isBoss) el.classList.add('glitter-hole-target');
       if(!G.review && isRock && !isBoss) el.classList.add('rock-cell');
       if(!G.review && isWall && !isBoss) el.classList.add('wall-cell');
-      if(!G.review && G.freezeMode && !isMatched && !isFrozen && !isBoss && !isRock) el.classList.add('glitter-hole-target');
+      if(!G.review && G.freezeMode && !isMatched && !isFrozen && !isBoss) el.classList.add('glitter-hole-target');
 
       const faceContent = card.img ? `<img src="${card.img}" style="width:75%;height:75%;object-fit:contain;" onerror="this.style.display='none'">` : card.emoji;
       const hpPct = Math.max(0, G.hp/G.maxHp*100);
-      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isFrozen&&!isMatched&&!G.review?'<div class="frozen-badge"><img src="./freeze-wand.webp"></div>':''}${G.cubeTile===pathIdx&&!G.review?'<div class="cube-badge"><img src="./gelatinous-cube.webp"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?rockStackHtml(rockCount):''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
+      el.innerHTML = `<div class="card-inner"><div class="card-back"></div><div class="card-face ${card.fc}">${faceContent}</div></div>${isBoss&&!G.review?`<div class="boss-overlay" id="bossOnTile"></div><div class="boss-tile-hp"><div class="boss-tile-hp-bar" style="width:${hpPct}%"></div></div>`:''}${isWarrior&&!isBoss&&!G.review?'<div class="warrior-overlay"><img src="' + WARRIOR_SRC + '" style="width:90%;height:90%;object-fit:contain;"></div>':''}${isFrozen&&!isMatched&&!G.review?'<div class="frozen-badge"><img src="./freeze-wand.webp"></div>':''}${G.cubeTile===pathIdx&&!G.review?'<div class="cube-badge"><img src="./gelatinous-cube.webp"></div>':''}${isGlitterPending&&!G.review?'<div class="glitter-hole-overlay"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div>':''}${isRock&&!isBoss&&!G.review?(isFrozen?rockCornerHtml(rockCount):rockStackHtml(rockCount)):''}${isWall&&!isBoss&&!G.review?'<div class="wall-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;"><img src="./smashy-wall.webp" style="width:90%;height:90%;object-fit:contain;"></div>':''}`;
 
       if(G.cubeMode && !isMatched && (isBoss||isRock||isWall)) el.addEventListener('click',()=>onCard(pathIdx)); // the cube can go on any tile
       if(isGlitterPending && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
       if(G.warriorMode && !isBoss) el.addEventListener('click',()=>onCard(pathIdx));
-      else if(!isGlitterPending && !isMatched && !isBoss && !isWarrior && !isRock && !isWall) el.addEventListener('click',()=>onCard(pathIdx));
+      else if(!isGlitterPending && !isMatched && !isBoss && !isWarrior && (!isRock || isFrozen) && !isWall) el.addEventListener('click',()=>onCard(pathIdx));
 
       g.appendChild(el);
     }
@@ -1069,7 +1076,7 @@ function onCard(pathIdx){
 
   // FREEZE WAND: pick tiles to hold face-up until they are matched
   if(G.freezeMode){
-    if(G.matched.has(pathIdx) || G.frozenTiles.has(pathIdx) || pathIdx===G.bossPos || G.rocks.includes(pathIdx)) return;
+    if(G.matched.has(pathIdx) || G.frozenTiles.has(pathIdx) || pathIdx===G.bossPos) return;
     G.frozenTiles.add(pathIdx);
     G.freezeLeft--;
     const ppSub=document.getElementById('ppSub');
@@ -1148,7 +1155,7 @@ function onCard(pathIdx){
   if(G.cards[pathIdx].singleton){
     G.canFlip=false; G.canFlipLockedAt=Date.now();
     setTimeout(()=>{
-      G.matched.add(pathIdx); G.frozenTiles.delete(pathIdx); if(G.cubeTile===pathIdx) G.cubeTile=null; G.flipped=[]; G.canFlip=false; G.canFlipLockedAt=null; G.inBonusFlip=false; // a match ends the turn: stay locked until Smashy has moved
+      G.matched.add(pathIdx); G.frozenTiles.delete(pathIdx); if(G.cubeTile===pathIdx) G.cubeTile=null; G.rocks=G.rocks.filter(r=>r!==pathIdx); G.flipped=[]; G.canFlip=false; G.canFlipLockedAt=null; G.inBonusFlip=false; // a match ends the turn: stay locked until Smashy has moved
       G.lastMatched=[pathIdx];
       applyPower(G.cards[pathIdx].id); render();
       setTimeout(()=>{ G.lastMatched=[]; render(); },600);
@@ -1163,7 +1170,7 @@ function onCard(pathIdx){
   // whether it is your first or second flip of the turn
   const frozenPartnerOf=(idx)=>{
     for(const fi of G.frozenTiles){
-      if(fi===idx||G.matched.has(fi)||G.rocks.includes(fi)||fi===G.bossPos) continue;
+      if(fi===idx||G.matched.has(fi)||fi===G.bossPos) continue; // a rock on a frozen tile doesn't stop it matching
       if(cardsMatch(G.cards[idx],G.cards[fi])) return fi;
     }
     return -1;
@@ -1207,6 +1214,7 @@ function onCard(pathIdx){
         G.matched.add(a); G.matched.add(b); G.pairs++;
         G.frozenTiles.delete(a); G.frozenTiles.delete(b);
         if(G.cubeTile===a||G.cubeTile===b) G.cubeTile=null; // matching the tile under the cube removes the cube from the game
+        G.rocks=G.rocks.filter(r=>r!==a&&r!==b); // matching a rocked (frozen) tile removes its rocks
         G.lastMatched=[a,b];
         G.flipped=[]; G.canFlip=false; G.canFlipLockedAt=null; // a match ends the turn: stay locked until Smashy has moved
         applyPower(powerId); render();
@@ -1248,7 +1256,7 @@ let freezePopupTimer=null, cubePopupTimer=null;
 function countFreezable(){
   let n=0;
   for(let i=0;i<G.cards.length;i++){
-    if(!G.matched.has(i)&&i!==G.bossPos&&!G.rocks.includes(i)&&!G.frozenTiles.has(i)) n++;
+    if(!G.matched.has(i)&&i!==G.bossPos&&!G.frozenTiles.has(i)) n++;
   }
   return n;
 }
@@ -1471,7 +1479,7 @@ function anyFaceDown(exclude=[]){
 
 function hasFlippable(){
   for(let i=0;i<TOTAL;i++){
-    if(!G.matched.has(i)&&!G.flipped.includes(i)&&!G.rocks.includes(i)&&G.wall!==i&&i!==G.bossPos) return true;
+    if(!G.matched.has(i)&&!G.flipped.includes(i)&&(!G.rocks.includes(i)||G.frozenTiles.has(i))&&G.wall!==i&&i!==G.bossPos) return true;
   }
   return false;
 }
