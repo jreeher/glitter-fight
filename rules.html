@@ -382,7 +382,7 @@
       Players must use their memory and the magic tiles on the board to defeat Smashy before he reaches the castle.
     </p>
     <p>
-      This is a <strong>cooperative memory matching game</strong> for 1–4 players. Each round, Smashy rolls the dice and takes his turn first — then players flip two tiles to find matching pairs. Each matched pair triggers a powerful ability!
+      This is a <strong>cooperative memory matching game</strong> for 1–4 players — all players are on the <strong>same team</strong> and work together to defeat Smashy. Each round, Smashy rolls the dice and takes his turn first — then the player flips two tiles to find matching pairs. Each matched pair triggers a powerful ability!
     </p>
     <div class="two-col" style="margin-top:14px;">
       <div class="callout callout-gold">
@@ -428,14 +428,14 @@
         <div class="component-count">1 Smashy Token</div>
       </div>
       <div class="component-item">
-        <img src="./black-cube.webp" alt="Black Health Cube">
-        <div class="component-name">Smashy Health Cubes</div>
-        <div class="component-count">12 black health cubes</div>
+        <img src="./orange-cube.png" alt="Health Token">
+        <div class="component-name">Smashy Health Tokens</div>
+        <div class="component-count">12 health tokens</div>
       </div>
       <div class="component-item">
-        <img src="./yellow-cube.webp" alt="Yellow Health Cube">
-        <div class="component-name">Smashy Health Cubes (Ultra Smash Mode)</div>
-        <div class="component-count">3 yellow health cubes</div>
+        <img src="./yellow-cube.webp" alt="Extra Health Token" style="filter:hue-rotate(265deg);">
+        <div class="component-name">Extra Smashy Health (Ultra Smash Mode)</div>
+        <div class="component-count">3 extra health tokens</div>
       </div>
       <div class="component-item">
         <img src="./castle-square.webp" alt="" style="border-radius:10px;">
@@ -443,9 +443,9 @@
         <div class="component-count">1 Cloud Kingdom</div>
       </div>
       <div class="component-item">
-        <img src="./cloud-wall.webp" alt="">
-        <div class="component-name">Fluff Wall Token</div>
-        <div class="component-count">1 wall</div>
+        <img src="./shield.webp" alt="">
+        <div class="component-name">Shield Token</div>
+        <div class="component-count">1 shield</div>
       </div>
       <div class="component-item">
         <img src="./rock-3.webp" alt="">
@@ -453,9 +453,14 @@
         <div class="component-count">2 rocks</div>
       </div>
       <div class="component-item">
-        <img src="./shield.webp" alt="">
-        <div class="component-name">Glitter Guard Token</div>
-        <div class="component-count">1 shield</div>
+        <img src="./freeze-token.svg" alt="">
+        <div class="component-name">Freeze Token</div>
+        <div class="component-count">1 freeze token</div>
+      </div>
+      <div class="component-item">
+        <img src="./gelatinous-cube.svg" alt="">
+        <div class="component-name">Gelatinous Cube Token</div>
+        <div class="component-count">1 cube</div>
       </div>
       <div class="component-item">
         <img src="./smashys-mountain.webp" alt="" style="border-radius:8px;">
@@ -494,7 +499,7 @@
       </li>
       <li>
         <span class="step-num">4</span>
-        <span>Set up the <strong>castle</strong>: Place the castle at the far end of the tile path. Place the Glitter Guard and Fluff Wall tokens beside the castle.</span>
+        <span>Set up the <strong>castle</strong>: Place the castle at the far end of the tile path. Place the shield, freeze, and gelatinous cube tokens beside the castle.</span>
       </li>
       <li>
         <span class="step-num">5</span>
@@ -502,7 +507,7 @@
       </li>
       <li>
         <span class="step-num">6</span>
-        <span>Set <strong>Smashy's HP</strong>: Easy/Medium/Hard — all black cubes (<strong>12 HP</strong>). Ultra Smash Mode — add the 3 yellow cubes (<strong>15 HP</strong>).</span>
+        <span>Set <strong>Smashy's HP</strong>: Easy/Medium/Hard — <strong>12 health tokens</strong>. Ultra Smash Mode — add the 3 extra health tokens (<strong>15 HP</strong>).</span>
       </li>
     </ul>
   </div>
@@ -516,8 +521,8 @@
       <span class="number">4</span>
       How to Play
     </div>
-    <p>Players alternate between <strong>Smashy's Turn</strong> and <strong>the Player's Turn</strong>. Smashy always goes first.</p>
-    <p style="margin-top:10px;">When Smashy moves, he <strong>skips over matched tiles</strong> that have been removed from the game — they don't count as steps. He only lands on unmatched tile spaces.</p>
+    <p><strong>Turn Order:</strong> Smashy always goes first — players roll the dice for Smashy's action. After Smashy's turn ends, the player flips two tiles over. If they match, the power activates! If not, they are flipped back over.</p>
+    <p style="margin-top:10px;"><strong>Empty Spaces:</strong> Smashy only steps on <strong>unmatched</strong> tiles — so with every matched tile, his path to the castle gets smaller.</p>
 
     <div class="callout callout-red">
       <img src="./smashy.webp" alt="">
@@ -536,8 +541,8 @@
         <div class="callout-text">
           Flip any face-down tile, then flip a second tile. Two outcomes are possible:
           <br><br>
-          <strong>Match!</strong> Both tiles show the same image. Their power activates immediately, and the pair is removed from play (left face-up, out of the game).<br><br>
-          <strong>No Match.</strong> Both tiles flip back face-down. Try to remember where they were!
+          <strong>Match!</strong> Both tiles show the same image. The power activates immediately, and the pair is removed from play (left face-up, out of the game).<br><br>
+          <strong>No Match.</strong> Both tiles are flipped back over. Try to remember where they were!
         </div>
       </div>
     </div>
@@ -566,7 +571,7 @@
         <div class="tile-info">
           <div class="tile-name">Feather Arrow</div>
 
-          <div class="tile-desc">Deals <strong>1 damage</strong> to Smashy.</div>
+          <div class="tile-desc">Smashy loses <strong>1 health</strong>.</div>
         </div>
       </div>
 
@@ -575,7 +580,7 @@
         <div class="tile-info">
           <div class="tile-name">Cumulus Cannon</div>
 
-          <div class="tile-desc">Deals <strong>2 damage</strong> to Smashy.</div>
+          <div class="tile-desc">Smashy loses <strong>2 health</strong>.</div>
         </div>
       </div>
 
@@ -584,7 +589,7 @@
         <div class="tile-info">
           <div class="tile-name">Rain-Bow</div>
 
-          <div class="tile-desc">Deals <strong>3 damage</strong> to Smashy.</div>
+          <div class="tile-desc">Smashy loses <strong>3 health</strong>.</div>
         </div>
       </div>
 
@@ -593,7 +598,7 @@
         <div class="tile-info">
           <div class="tile-name">Cloudy</div>
 
-          <div class="tile-desc">Pushes Smashy <strong>back 1 space</strong>.</div>
+          <div class="tile-desc">Smashy is <strong>pushed back 1 tile</strong>.</div>
         </div>
       </div>
 
@@ -602,7 +607,7 @@
         <div class="tile-info">
           <div class="tile-name">Unicorn Horn</div>
 
-          <div class="tile-desc">Deals <strong>2 damage</strong> and pushes Smashy <strong>back 2 spaces</strong>.</div>
+          <div class="tile-desc">Smashy loses <strong>2 health</strong> and is <strong>pushed back 2 tiles</strong>.</div>
         </div>
       </div>
 
@@ -611,7 +616,7 @@
         <div class="tile-info">
           <div class="tile-name">Rainbow Tornado</div>
 
-          <div class="tile-desc">Pushes Smashy <strong>back 3 spaces</strong>.</div>
+          <div class="tile-desc">Smashy is <strong>pushed back 3 tiles</strong>.</div>
         </div>
       </div>
 
@@ -622,7 +627,7 @@
         <div class="tile-info">
           <div class="tile-name">Rainbow Royals</div>
           <div class="tile-pairs">1 pair (special)</div>
-          <div class="tile-desc">Deals <strong>3 damage</strong> to Smashy <strong>and</strong> pushes him <strong>back 3 spaces</strong>. This is not a typical match — the King tile and Queen tile look different but must be matched with each other.</div>
+          <div class="tile-desc">Smashy loses <strong>3 health</strong> and is <strong>pushed back 3 tiles</strong>. This is not a typical match — the King tile and Queen tile look different but must be matched with each other.</div>
         </div>
       </div>
 
@@ -631,7 +636,7 @@
         <div class="tile-info">
           <div class="tile-name">Freeze Wand</div>
 
-          <div class="tile-desc">Deals <strong>1 damage</strong> and <strong>Freezes Smashy</strong> for one turn — he skips his next dice roll entirely.</div>
+          <div class="tile-desc">Flip over a tile and place a <strong>freeze token</strong> on top — the tile remains <strong>face up</strong> until a match is found.</div>
         </div>
       </div>
 
@@ -640,7 +645,7 @@
         <div class="tile-info">
           <div class="tile-name">Glitter Guard</div>
 
-          <div class="tile-desc">Deals <strong>1 damage</strong> to Smashy and grants <strong>2 castle shields</strong>. Flip over any tile and place a shield token on top — that tile remains <strong>face up</strong> until a match is found on it.</div>
+          <div class="tile-desc">Place a <strong>gelatinous cube token</strong> on any tile. If Smashy ends his turn on that tile, he is <strong>stuck in place</strong> for a turn and does not roll. If the tile is matched, you can place the cube token on another tile. The token cannot be removed from the board.</div>
         </div>
       </div>
 
@@ -649,7 +654,7 @@
         <div class="tile-info">
           <div class="tile-name">Wall of Fluff</div>
 
-          <div class="tile-desc">Adds <strong>1 Wall of Fluff token</strong> to the Cloud Kingdom. Each token absorbs one breach when Smashy would hit the castle.</div>
+          <div class="tile-desc">Place a <strong>shield token</strong> in front of the castle — if Smashy would enter the castle he is stopped and the shield is removed.</div>
         </div>
       </div>
 
@@ -658,7 +663,7 @@
         <div class="tile-info">
           <div class="tile-name">Sparkle Wand</div>
 
-          <div class="tile-desc">Lets you <strong>peek at up to 4 face-down tiles</strong> of your choice without flipping them. Peeked tiles are <strong>NOT considered matched</strong> and are not removed from play.</div>
+          <div class="tile-desc">Flip over a tile to <strong>peek</strong> at it — any tiles that are flipped this way are <strong>NOT considered matched</strong>.</div>
         </div>
       </div>
 
@@ -667,7 +672,7 @@
         <div class="tile-info">
           <div class="tile-name">Glitter Hole</div>
 
-          <div class="tile-desc">When matched, <strong>immediately removes all rock tokens</strong> from the board and deal <strong>2 damage</strong> to Smashy.</div>
+          <div class="tile-desc">All rocks are <strong>immediately removed</strong> from the board.</div>
         </div>
       </div>
 
@@ -683,8 +688,7 @@
       <span class="number">6</span>
       Smashy's Turn
     </div>
-    <p style="margin-bottom:14px;">At the start of every turn, roll Smashy's die. There are 6 possible dice rolls. If Smashy is <strong>Frozen</strong>
-      <span class="inline-tile tf-freeze" style="background:#80d8f8;"><img src="./freeze-wand.webp"></span>, he skips his turn and the freeze is removed.
+    <p style="margin-bottom:14px;">At the start of every turn, roll Smashy's die. There are 6 possible dice rolls. Smashy moves forward <strong>one tile for every foot</strong> shown on the die face. If Smashy is <strong>stuck</strong> on a tile with the gelatinous cube token, he does not roll that turn.
     </p>
 
     <table class="dice-table">
@@ -699,7 +703,7 @@
         <tr>
           <td><img src="./step-1.webp" class="dice-icon" style="border:2px solid #c8a030;" alt="Step 1"></td>
           <td><strong>Step 1</strong></td>
-          <td>Smashy moves forward 1 tile along the path.</td>
+          <td>Smashy moves forward 1 tile along the path (one tile for every foot shown on the die face).</td>
         </tr>
         <tr>
           <td><img src="./step-2.webp" class="dice-icon" style="border:2px solid #c8a030;" alt="Step 2"></td>
@@ -719,17 +723,17 @@
         <tr style="background:#3d1f0a;">
           <td style="background:#3d1f0a;border-radius:0;"><img src="./rock-3.webp" class="dice-icon" alt="Rock"></td>
           <td style="background:#3d1f0a;color:#e8c99a;"><strong>Rock</strong></td>
-          <td style="background:#3d1f0a;color:#e8c99a;">Smashy drops a rock token on the tile directly in front of him. Rocks can stack on the same tile. That tile cannot be flipped until the rock is cleared — match a Glitter Hole pair to remove all rocks instantly.</td>
+          <td style="background:#3d1f0a;color:#e8c99a;">A rock is placed on the tile in front of Smashy (multiple rocks can be on the same tile). That tile cannot be flipped until the rock is cleared — match a Glitter Hole pair to remove all rocks instantly.</td>
         </tr>
         <tr style="background:#111;">
           <td style="background:#111;"><img src="./thunder.webp" class="dice-icon" alt="Thunder"></td>
           <td style="background:#111;color:#e0e0e0;"><strong>Thunder</strong></td>
-          <td style="background:#111;color:#e0e0e0;">All unmatched tiles condense towards the castle, sliding to fill any gaps left by matched tiles. Tile order stays the same — they just close the gaps.</td>
+          <td style="background:#111;color:#e0e0e0;">All tiles must be connected again to form a continuous path to the castle — slide the remaining tiles together to close any gaps left by matched tiles.</td>
         </tr>
         <tr>
           <td><img src="./cloud-2-2.webp" class="dice-icon" alt="Taunt"></td>
           <td><strong>Taunt</strong></td>
-          <td>Smashy taunts the players and does nothing this turn. Thankfully, only your pride is hurt!</td>
+          <td><strong>Nothing!</strong> Smashy taunts the players and does nothing this turn. Thankfully, only your pride is hurt!</td>
         </tr>
       </tbody>
     </table>
@@ -794,8 +798,8 @@
     <div class="callout callout-purple">
       <img src="./star-wand.webp" alt="">
       <div class="callout-body">
-        <div class="callout-title">All Tiles Blocked</div>
-        <div class="callout-text">If every remaining face-down tile is covered by a rock or wall, the player cannot flip any tiles. The player must pass on their turn and Smashy rolls again.</div>
+        <div class="callout-title">Uh Oh!</div>
+        <div class="callout-text">If no tiles are available, the player must pass on their turn and Smashy rolls again.</div>
       </div>
     </div>
 
@@ -822,14 +826,14 @@
         <img src="./kingandqueen.webp" alt="Victory">
         <div class="outcome-title">Victory!</div>
         <div class="outcome-text">
-          Players win if <strong>Smashy's HP reaches 0</strong>.
+          Players win by <strong>removing all of Smashy's health</strong>.
         </div>
       </div>
       <div class="outcome-box outcome-lose">
         <img src="./smashy.webp" alt="Defeat">
         <div class="outcome-title">Defeated!</div>
         <div class="outcome-text">
-          Players lose if Smashy reaches the castle and <strong>no Fluff Walls remain</strong> to stop him.
+          Players lose if Smashy reaches the <strong>Cloud Castle</strong> (a shield token can stop him once — see Wall of Fluff).
         </div>
       </div>
     </div>
@@ -849,14 +853,14 @@
         <img src="./feather-arrow.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div style="text-align:center;width:100%;">
           <div class="callout-title" style="font-size:1.1rem;color:#1a5aaa;">Easy</div>
-          <div class="callout-text">Easy Dice (Blue)<br>12 Smashy HP (all black)</div>
+          <div class="callout-text">Easy Dice (Blue)<br>12 Smashy health tokens</div>
         </div>
       </div>
       <div class="callout callout-blue" style="flex-direction:column;gap:8px;text-align:center;">
         <img src="./cloud-cannon-2.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div style="text-align:center;width:100%;">
           <div class="callout-title" style="font-size:1.1rem;color:#8030c0;">Medium</div>
-          <div class="callout-text">Medium Dice (Purple)<br>12 Smashy HP (all black)</div>
+          <div class="callout-text">Medium Dice (Purple)<br>12 Smashy health tokens</div>
         </div>
       </div>
     </div>
@@ -865,14 +869,14 @@
         <img src="./rain-bow.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div style="text-align:center;width:100%;">
           <div class="callout-title" style="font-size:1.1rem;color:#b08800;">Hard</div>
-          <div class="callout-text">Hard Dice (Yellow)<br>12 Smashy HP (all black)</div>
+          <div class="callout-text">Hard Dice (Yellow)<br>12 Smashy health tokens</div>
         </div>
       </div>
       <div class="callout" style="flex-direction:column;gap:8px;text-align:center;background:linear-gradient(135deg,#1a0033,#3d0066);border:1px solid #9900cc;">
         <img src="./smashy.webp" style="width:40px;height:40px;object-fit:contain;margin:0 auto;">
         <div style="text-align:center;width:100%;">
           <div class="callout-title" style="font-size:1.1rem;color:#dd44ff;">Ultra Smash Mode</div>
-          <div class="callout-text" style="color:#fff;">Hard Dice (Yellow)<br>15 Smashy HP (black + yellow)</div>
+          <div class="callout-text" style="color:#fff;">Hard Dice (Yellow)<br>15 Smashy health (12 + 3 extra tokens)</div>
         </div>
       </div>
     </div>
