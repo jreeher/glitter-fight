@@ -399,7 +399,15 @@ body.shake{animation:shake 0.45s ease-in-out;}
       </div>
     </div>
     <button class="btn-start" id="btnStart" onclick="startFromSetup()" style="margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;"><img src="./tf-logo.webp" style="width:26px;height:26px;object-fit:contain;">Start Battle!</button>
-    <div class="setup-tiles" id="setupTiles"></div>
+    <button class="btn-tutorial" id="btnReviewTiles" onclick="showTilePowers()">Review Tile Powers</button>
+  </div>
+</div>
+
+<div class="tutorial-overlay off" id="tilePowersOverlay" onclick="if(event.target===this)closeTilePowers()">
+  <div class="setup-card" style="max-height:88vh;">
+    <div class="setup-title" style="font-size:1.5rem;margin-bottom:12px;">Tile Powers</div>
+    <div class="setup-tiles" id="tilePowersGrid"></div>
+    <button class="btn-tutorial" onclick="closeTilePowers()">Close</button>
   </div>
 </div>
 
@@ -627,15 +635,9 @@ const TILE_CONFIG = [
 ];
 let setupCounts = {};
 
-function tileMax(t) {
-  if (t.singleton) return t.max !== undefined ? t.max : 1;
-  return (gameMode === 'hard' || gameMode === 'ultrasmash') ? 1 : (t.max !== undefined ? t.max : Infinity);
-}
-
-function tileDefault(t, mode) {
-  if ((mode === 'hard' || mode === 'ultrasmash') && t.hardDefaultPairs !== undefined) return t.hardDefaultPairs;
-  if (mode === 'easy' && t.easyDefaultPairs !== undefined) return t.easyDefaultPairs;
-  return t.defaultPairs;
+// Every game uses exactly one pair of each tile (the King is the Queen's partner and has no pair of its own).
+function resetSetupCounts() {
+  TILE_CONFIG.forEach(t => { setupCounts[t.id] = t.hidden ? 0 : 1; });
 }
 
 const DICE_DEF = [
@@ -671,12 +673,8 @@ function setMode(mode) {
   document.getElementById('modeMedium').className = 'mode-btn' + (mode==='medium'      ? ' active-medium'     : '');
   document.getElementById('modeHard').className   = 'mode-btn' + (mode==='hard'        ? ' active-hard'       : '');
   document.getElementById('modeUltra').className  = 'mode-btn' + (mode==='ultrasmash'  ? ' active-ultrasmash' : '');
-  TILE_CONFIG.forEach(t => {
-    if (t.hidden) return;
-    setupCounts[t.id] = Math.min(tileDefault(t, mode), tileMax(t));
-  });
+  resetSetupCounts();
   userChangedHp = false;
-  renderSetupTiles();
   updateSetupStats();
 }
 
@@ -721,43 +719,24 @@ function renderTutStep() {
 }
 
 function showSetup() {
-  TILE_CONFIG.forEach(t => {
-    setupCounts[t.id] = Math.min(tileDefault(t, gameMode), tileMax(t));
-  });
+  resetSetupCounts();
   userChangedHp = false;
-  renderSetupTiles();
   updateSetupStats();
   document.getElementById('setupOverlay').classList.remove('off');
 }
 
-function renderSetupTiles() {
-  const el = document.getElementById('setupTiles');
-  el.innerHTML = TILE_CONFIG.filter(t => !t.hidden).map(t => `
+function showTilePowers() {
+  document.getElementById('tilePowersGrid').innerHTML = TILE_CONFIG.filter(t => !t.hidden).map(t => `
     <div class="setup-tile-card">
-      <img src="${t.setupImg || t.img}" class="setup-tile-img">
+      <img src="${t.setupImg || t.img}" class="setup-tile-img" style="width:44px;height:44px;">
       <div class="setup-tile-name">${t.name}</div>
-      <div style="font-size:0.6rem;color:var(--muted)">${t.desc}</div>
-      <div class="setup-counter">
-        <button class="setup-btn" onclick="changeCount('${t.id}',-1)">−</button>
-        <span class="setup-count" id="cnt-${t.id}">${setupCounts[t.id]}</span>
-        <button class="setup-btn" id="cnt-plus-${t.id}" onclick="changeCount('${t.id}',1)" style="${setupCounts[t.id] >= tileMax(t) ? 'opacity:0.3;cursor:not-allowed;pointer-events:none' : ''}">+</button>
-      </div>
+      <div style="font-size:0.68rem;color:#1a3a5a;opacity:0.85;">${t.desc}</div>
     </div>`).join('');
+  document.getElementById('tilePowersOverlay').classList.remove('off');
 }
 
-function changeCount(id, delta) {
-  const t = TILE_CONFIG.find(t => t.id === id);
-  const maxAllowed = tileMax(t);
-  setupCounts[id] = Math.min(maxAllowed, Math.max(0, setupCounts[id] + delta));
-  document.getElementById(`cnt-${id}`).textContent = setupCounts[id];
-  const plusBtn = document.getElementById(`cnt-plus-${id}`);
-  if (plusBtn) {
-    const atMax = setupCounts[id] >= tileMax(t);
-    plusBtn.style.opacity = atMax ? '0.3' : '';
-    plusBtn.style.cursor = atMax ? 'not-allowed' : '';
-    plusBtn.style.pointerEvents = atMax ? 'none' : '';
-  }
-  updateSetupStats();
+function closeTilePowers() {
+  document.getElementById('tilePowersOverlay').classList.add('off');
 }
 
 function updateSetupStats() {
@@ -853,7 +832,7 @@ function renderPowersPanel(counts){
     .filter(t => !t.hidden && (counts[t.id]||0) > 0)
     .map(t => `<div class="power-card">
       <img src="${t.setupImg || t.img}" class="power-img" onerror="this.style.display='none'">
-      <div class="power-name">${t.name} <span class="power-count">×${counts[t.id]}</span></div>
+      <div class="power-name">${t.name}</div>
       <div class="power-desc">${t.desc}</div>
     </div>`).join('');
 }
