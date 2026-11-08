@@ -377,7 +377,8 @@ body.shake{animation:shake 0.45s ease-in-out;}
   <div class="setup-clouds" id="setupClouds"></div>
   <div class="setup-card">
     <img src="./Glitter Fight Banner.webp" alt="Glitter Fight" style="width:100%;height:auto;display:block;margin:0 auto 16px;border-radius:14px;">
-    <button class="btn-tutorial" onclick="showTutorial()" style="margin-bottom:20px;">Tutorial</button>
+    <button class="btn-tutorial" onclick="showTutorial()" style="margin-bottom:10px;">Tutorial</button>
+    <button class="btn-tutorial" id="btnReviewTiles" onclick="showTilePowers()" style="margin-bottom:20px;">Review Tile Powers</button>
     <div class="setup-mode-box" id="modeBox" style="margin-bottom:14px;">
       <div class="setup-mode-label"><strong>Difficulty</strong></div>
       <div class="setup-mode-btns" style="flex-wrap:wrap;justify-content:center;">
@@ -398,8 +399,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
         <div class="setup-stat-row"><span>Max possible damage</span><span class="setup-stat-val" id="setupMaxDmg">—</span></div>
       </div>
     </div>
-    <button class="btn-start" id="btnStart" onclick="startFromSetup()" style="margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;"><img src="./tf-logo.webp" style="width:26px;height:26px;object-fit:contain;">Start Battle!</button>
-    <button class="btn-tutorial" id="btnReviewTiles" onclick="showTilePowers()">Review Tile Powers</button>
+    <button class="btn-start" id="btnStart" onclick="startFromSetup()" style="display:flex;align-items:center;justify-content:center;gap:8px;"><img src="./tf-logo.webp" style="width:26px;height:26px;object-fit:contain;">Start Battle!</button>
   </div>
 </div>
 
@@ -442,10 +442,10 @@ body.shake{animation:shake 0.45s ease-in-out;}
         <div class="tut-step-title">Flipping Tiles</div>
         <p class="tut-text">Tap any face-down tile to flip it over and see what's underneath. Then tap a second tile.</p>
         <div class="tut-box">
-          <div class="tut-row"><span class="tut-icon">✅</span><span><strong style="color:var(--green)">Match!</strong> Both tiles show the same image — their power activates immediately. The tiles stay face-up and are removed from play.</span></div>
+          <div class="tut-row"><span class="tut-icon">✅</span><span><strong style="color:var(--green)">Match!</strong> Both tiles show the same image — their power activates immediately. The pair then disappears from the board, leaving an empty outlined slot.</span></div>
           <div class="tut-row"><span class="tut-icon">❌</span><span><strong style="color:var(--red)">No match.</strong> Both tiles flip back face-down, and Smashy takes his turn. Try to remember where they were!</span></div>
         </div>
-        <p class="tut-text">Rocks <img src="./rock.png" style="width:16px;height:16px;vertical-align:middle;"> dropped by Smashy block tiles — match a <img src="./glitter-hole.webp" style="width:16px;height:16px;vertical-align:middle;"> Glitter Hole pair and click either tile to remove them all instantly!</p>
+        <p class="tut-text">Rocks <img src="./rock.png" style="width:16px;height:16px;vertical-align:middle;"> dropped by Smashy block tiles so they can't be flipped — match a <img src="./glitter-hole.webp" style="width:16px;height:16px;vertical-align:middle;"> Glitter Hole pair to clear every rock instantly!</p>
       </div>
 
       <div class="tutorial-step" id="tutStep2">
@@ -456,10 +456,15 @@ body.shake{animation:shake 0.45s ease-in-out;}
         <div class="tut-step-title">Tile Powers</div>
         <p class="tut-text">Each tile does something when you match a pair:</p>
         <div class="tut-box">
-          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#a8d080;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./feather-arrow.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Feather Arrow</strong> — Deals 3 damage to Smashy</span></div>
-          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#c8c890;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./wind-blast.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Wind Blast</strong> — Pushes Smashy back 2 spaces</span></div>
+          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#a8d080;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./feather-arrow.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Feather Arrow</strong> — Deals 1 damage to Smashy (Cumulus Cannon deals 2, Rain-Bow deals 3)</span></div>
+          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#c8c890;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./wind-blast.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Cloudy</strong> — Pushes Smashy back 1 tile (Unicorn Horn: 2 damage + back 2, Rainbow Tornado: back 3)</span></div>
+          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#e0c070;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./star-wand.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Sparkler</strong> — Peek at 4 face-down tiles — peeked tiles are not matched</span></div>
+          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#80d8f8;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./freeze-wand.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Freeze Wand</strong> — 1 damage, then freeze 2 tiles face-up until matched. Flipping a frozen tile's partner matches it instantly (even under a rock), and you still get a second flip</span></div>
+          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#80b0e0;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./rainbow-guardian.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Glitter Guard</strong> — 1 damage + a shield token in front of the castle that stops Smashy once</span></div>
+          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#a8e4f0;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./gelatinous-cube.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Gelatinous Cube</strong> — 1 damage, then place the cube on any tile. If Smashy ends his turn there he's stuck for a turn. Matching that tile removes the cube</span></div>
+          <div class="tut-row"><span class="tut-icon"><div style="width:20px;height:20px;border-radius:4px;background:#f080c8;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="./glitter-hole.webp" style="width:85%;height:85%;object-fit:contain;"></div></span><span><strong style="color:var(--text)">Glitter Hole</strong> — 1 damage + clears every rock</span></div>
         </div>
-        <p class="tut-text">Every tile has a unique power — from dealing damage, to pushing Smashy back, to peeking at hidden tiles. Check the panel below the board to see which tiles are in play!</p>
+        <p class="tut-text">Every game uses one pair of each tile. Tap <strong style="color:var(--text)">Review Tile Powers</strong> on the setup screen, or check the panel below the board, to see every tile.</p>
       </div>
 
       <div class="tutorial-step" id="tutStep3">
@@ -469,12 +474,12 @@ body.shake{animation:shake 0.45s ease-in-out;}
         <div class="tut-step-title">Smashy's Turn</div>
         <p class="tut-text">After every pair of tile flips — whether you matched or not — Smashy rolls a die and does one of these:</p>
         <div class="tut-box">
-          <div class="tut-row"><span class="tut-icon"><img src="./Step 1.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Charge 1–4 steps</strong> toward your castle along the path. The further he gets, the more urgent things become!</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./rock.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on a tile ahead, blocking it (if there's no tile ahead, it lands on the Rainbow Gate). Match a <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole pair and click either tile to clear all rocks instantly.</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./smashy-wall.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Place a Wall</strong> on the tile behind him — pushback abilities can't move Smashy past it!</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./thunder.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Earthquake!</strong> All tiles condense towards the castle, filling gaps left by matched tiles. Watch out!</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./Step 1.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Charge 1–4 steps</strong> toward your castle along the path (Easy: 1–2, Medium: 1–3, Hard: 1–4). The further he gets, the more urgent things become!</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./rock.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on the next tile ahead, blocking it. Up to 3 rocks can be on tiles (the oldest goes first); if there's no tile ahead, the rock lands on the Rainbow Gate. A <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole match clears them all.</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./thunder.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Thunder!</strong> All tiles slide together toward the castle, filling gaps left by matched tiles. Watch out — your memory of where tiles were gets scrambled!</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./cloud-2-2.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Taunt</strong> — Smashy does nothing this turn (Easy dice only).</span></div>
         </div>
-        <p class="tut-text">A <img src="./freeze-wand.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#b3ecff">Freeze Wand</strong> match lets you freeze 2 tiles face-up until they're matched — even if a rock lands on one, it can still be matched (and the rock is removed). A <img src="./rainbow-guardian.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#4da6ff">Glitter Guard</strong> match puts a shield token in front of the castle, and a <img src="./gelatinous-cube.webp" style="width:14px;height:14px;vertical-align:middle;"> <strong style="color:#a8e4f0">Gelatinous Cube</strong> match traps Smashy — if he ends his turn on the cube's tile, he's stuck for a turn!</p>
+        <p class="tut-text">Smashy only steps on tiles that <strong style="color:var(--text)">haven't been matched</strong>, so every match makes his path to the castle shorter. A <img src="./gelatinous-cube.webp" style="width:14px;height:14px;vertical-align:middle;"> Gelatinous Cube can make him skip a whole turn!</p>
       </div>
 
       <div class="tutorial-step" id="tutStep4">
@@ -487,7 +492,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
           <div class="tut-row"><span class="tut-icon"><img src="./kingandqueen.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--green)">You win</strong> if Smashy's HP reaches 0, or if you successfully match all tile pairs on the board!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./smashy.webp" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--red)">You lose</strong> if Smashy reaches the castle and you have no <img src="./shield.webp" style="width:14px;height:14px;vertical-align:middle;"> shield tokens left to block him.</span></div>
         </div>
-        <p class="tut-text">On the <strong style="color:var(--text)">Setup Screen</strong> you can customize your tile loadout and set Smashy's HP. Higher HP = tougher fight! The HP slider automatically caps at your maximum possible damage output.</p>
+        <p class="tut-text">On the <strong style="color:var(--text)">Setup Screen</strong> choose a difficulty (it changes Smashy's dice) and set Smashy's HP. Higher HP = tougher fight! The HP slider automatically caps at the maximum damage your tiles can deal.</p>
       </div>
 
     </div>
