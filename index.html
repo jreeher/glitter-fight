@@ -429,7 +429,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
         <p class="tut-text">This is a <strong style="color:var(--text)">memory matching game</strong> — flip tiles two at a time to find matching pairs and unlock powerful abilities!</p>
         <div class="tut-box">
           <div class="tut-row"><span class="tut-icon"><img src="./tf-logo.webp" style="width:20px;height:20px;object-fit:contain;"></span><span>Match pairs to deal damage, push Smashy back, or defend your castle.</span></div>
-          <div class="tut-row"><span class="tut-icon"><img src="./smashy.webp" style="width:20px;height:20px;object-fit:contain;"></span><span>Every time you flip tiles (match or miss), Smashy gets a turn to advance!</span></div>
+          <div class="tut-row"><span class="tut-icon"><img src="./smashy.webp" style="width:20px;height:20px;object-fit:contain;"></span><span>Smashy always goes first — then every time you flip two tiles (match or miss), he takes another turn!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./kingandqueen.webp" style="width:20px;height:20px;object-fit:contain;"></span><span>Win by defeating Smashy or matching all pairs before he reaches the gates.</span></div>
         </div>
       </div>
@@ -472,7 +472,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
           <img src="./smashy.webp" style="width:56px;height:56px;object-fit:contain;">
         </div>
         <div class="tut-step-title">Smashy's Turn</div>
-        <p class="tut-text">After every pair of tile flips — whether you matched or not — Smashy rolls a die and does one of these:</p>
+        <p class="tut-text">Smashy always goes first. After that he takes a turn after every pair of tile flips — whether you matched or not — rolling a die and doing one of these:</p>
         <div class="tut-box">
           <div class="tut-row"><span class="tut-icon"><img src="./Step 1.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Charge 1–4 steps</strong> toward your castle along the path (Easy: 1–2, Medium: 1–3, Hard: 1–4). The further he gets, the more urgent things become!</span></div>
           <div class="tut-row"><span class="tut-icon"><img src="./rock.png" style="width:20px;height:20px;object-fit:contain;"></span><span><strong style="color:var(--text)">Drop a Rock</strong> on the next tile ahead, blocking it. Up to 3 rocks can be on tiles (the oldest goes first); if there's no tile ahead, the rock lands on the Rainbow Gate. A <img src="./glitter-hole.webp" style="width:14px;height:14px;vertical-align:middle;"> Glitter Hole match clears them all.</span></div>
@@ -828,8 +828,13 @@ function initGame(counts, bossHp, mode='medium'){
   document.getElementById('reviewBar').classList.remove('on');
   const soc = document.getElementById('smashyOnCastle');
   if(soc) soc.style.display = 'none';
+  // Smashy always goes first: lock flipping and let him take the opening turn
+  G.phase='boss'; G.canFlip=false;
   render();
+  const gameId=++gameCounter;
+  setTimeout(()=>{ if(gameId===gameCounter) bossTurn(); }, 800);
 }
+let gameCounter=0;
 
 function renderPowersPanel(counts){
   const grid = document.getElementById('powersGrid');
