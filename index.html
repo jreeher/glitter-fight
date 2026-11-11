@@ -286,12 +286,6 @@ body.shake{animation:shake 0.45s ease-in-out;}
 .mode-btn.active-hard{background:rgba(255,80,80,0.15);border-color:rgba(255,80,80,0.45);color:var(--red);}
 .mode-btn.active-ultrasmash{background:rgba(153,0,204,0.2);border-color:rgba(153,0,204,0.55);color:#dd44ff;}
 .setup-card .setup-title{color:#1a3a5a;}
-/* Review Tile Powers modal: pastel lavender-to-pink instead of the setup card's sky blue */
-.setup-card.tp-card{background:linear-gradient(180deg,#cdbbf2 0%,#e9c6ec 100%);border-color:rgba(255,255,255,0.6);}
-.setup-card.tp-card .setup-title{color:#4a2a7a;}
-.setup-card.tp-card .setup-tile-card{background:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.75);}
-.setup-card.tp-card .setup-tile-name{color:#3d2468;}
-.setup-card.tp-card .setup-tile-card div[style*="font-size:0.68rem"]{color:#4a3a6a!important;}
 .setup-card .setup-sub{color:#1a3a5a;}
 .setup-card .setup-tile-card{background:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.55);}
 .setup-card .setup-tile-name{color:#1a3a5a;}
@@ -316,6 +310,8 @@ body.shake{animation:shake 0.45s ease-in-out;}
 .btn-start:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
 .btn-tutorial{width:100%;padding:10px;font-family:'Fredoka One',cursive;font-size:0.95rem;letter-spacing:1px;background:#c47a82;color:#fff;border:1px solid rgba(160,80,90,0.6);border-radius:99px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:8px;}
 .btn-tutorial:hover{background:#d48e96;color:#fff;transform:translateY(-1px);}
+.btn-tutorial.btn-review{background:#8f74d1;border-color:rgba(100,70,170,0.6);}
+.btn-tutorial.btn-review:hover{background:#a48ce0;}
 /* Tutorial overlay */
 .tutorial-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 .tutorial-overlay.off{display:none;}
@@ -384,7 +380,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
   <div class="setup-card">
     <img src="./Glitter Fight Banner.webp" alt="Glitter Fight" style="width:100%;height:auto;display:block;margin:0 auto 16px;border-radius:14px;">
     <button class="btn-tutorial" onclick="showTutorial()" style="margin-bottom:10px;">Tutorial</button>
-    <button class="btn-tutorial" id="btnReviewTiles" onclick="showTilePowers()" style="margin-bottom:20px;">Review Tile Powers</button>
+    <button class="btn-tutorial btn-review" id="btnReviewTiles" onclick="showTilePowers()" style="margin-bottom:20px;">Review Tile Powers</button>
     <div class="setup-mode-box" id="modeBox" style="margin-bottom:14px;">
       <div class="setup-mode-label"><strong>Difficulty</strong></div>
       <div class="setup-mode-btns" style="flex-wrap:wrap;justify-content:center;">
@@ -410,7 +406,7 @@ body.shake{animation:shake 0.45s ease-in-out;}
 </div>
 
 <div class="tutorial-overlay off" id="tilePowersOverlay" onclick="if(event.target===this)closeTilePowers()">
-  <div class="setup-card tp-card" style="max-height:88vh;">
+  <div class="setup-card" style="max-height:88vh;">
     <div class="setup-title" style="font-size:1.5rem;margin-bottom:12px;">Tile Powers</div>
     <div class="setup-tiles" id="tilePowersGrid"></div>
     <button class="btn-tutorial" onclick="closeTilePowers()">Close</button>
